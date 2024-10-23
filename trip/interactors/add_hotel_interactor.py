@@ -7,15 +7,17 @@ class AddHotelInteractor:
         self.storage = storage
 
     def add_hotel(self,
-                 add_hotel_dto: MutateHotelDTO
+                  user_id: str,
+                  add_hotel_dto: MutateHotelDTO
                  ) :
 
 
 
-        self.storage.validate_admin_user(user_id=add_hotel_dto.user_id)
+        self.storage.validate_admin_user(user_id=user_id)
 
 
         hotel_dto = self.storage.add_hotel(
+            user_id=user_id,
             add_hotel_dto= add_hotel_dto
         )
 

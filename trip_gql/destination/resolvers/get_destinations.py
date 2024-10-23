@@ -6,7 +6,7 @@ from trip_gql.destination.types.types import GetDestinationsParams, GetDestinati
     Destination
 
 
-def resolve_get_destinations(self, info):
+def resolve_get_destinations(self, info,params):
     class Arguments:
         params = GetDestinationsParams(required=True)
 
@@ -14,9 +14,9 @@ def resolve_get_destinations(self, info):
     interactor = GetDestinationsInteractor(storage=storage)
 
     get_destinations_dto = GetDestinationsDTO(
-        tag = self.params.tag,
-        offset = self.params.offset,
-        limit = self.params.limit
+        tag = params.tag,
+        offset = params.offset,
+        limit = params.limit
     )
 
 

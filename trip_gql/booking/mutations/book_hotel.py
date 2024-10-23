@@ -4,7 +4,7 @@ from trip.exceptions.custom_exceptions import BookingScheduleOverlap
 from trip.interactors.book_hotel_interactor import BookHotelInteractor
 from trip.interactors.storage_interfaces.storage_interface import HotelDTO, BookingDTO, MutateBookingDTO
 from trip.storages.storage_implementation import StorageImplementation
-from trip_gql.booking.types.types import BookingNotPossible, BookHotelResponse, BookHotelParams
+from trip_gql.booking.types.types import BookingNotPossible, BookHotelResponse, BookHotelParams, Booking
 from trip_gql.hotel.types.types import Hotel
 
 
@@ -18,11 +18,18 @@ class BookHotel(graphene.Mutation):
     def mutate(root, info, params):
         storage = StorageImplementation()
         interactor = BookHotelInteractor(storage=storage)
+        days = params.checkout_date - params.checkin_date
+        if days:
+            total_amount = params.tariff * days.days
+        else:
+            total_amount = params.tariff
 
         booking_dto = MutateBookingDTO(
             user_id=params.user_id,
             checkin_date=params.checkin_date,
-            checkout_date=params.checkout_date
+            checkout_date=params.checkout_date,
+            total_amount = total_amount,
+            destination_id = params.destination_id
         )
         try:
             hotel_dto = interactor.book_hotel(hotel_id=params.hotel_id, book_hotel_dto=booking_dto)
@@ -31,12 +38,13 @@ class BookHotel(graphene.Mutation):
 
 
         return BookHotelResponse(
-            Hotel(
-                id=str(hotel_dto.id),
-                name=hotel_dto.name,
-                description=hotel_dto.description,
-                tariff=hotel_dto.tariff,
-                image_urls=hotel_dto.image_urls,
-                destination_id=hotel_dto.destination_id
+            Booking(
+                booking_id = hotel_dto.id,
+                user_id = hotel_dto.user_id,
+                destination_id = hotel_dto.destination_id,
+                hotel_id = hotel_dto.hotel_id,
+                checkin_date = hotel_dto.checkin_date,
+                checkout_date = hotel_dto.checkout_date,
+                total_amount = hotel_dto.total_amount
             )
         )

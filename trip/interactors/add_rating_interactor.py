@@ -13,7 +13,7 @@ class AddRatingInteractor:
 
 
 
-        # self.storage.validate_hotel_customer(user_id=add_rating_dto.user_id)
+        self.storage.validate_hotel_customer(destination_id=add_rating_dto.destination_id,user_id=add_rating_dto.user_id)
 
 
         rating_dto = self.storage.add_rating(

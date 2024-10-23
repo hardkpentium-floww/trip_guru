@@ -6,6 +6,7 @@ from trip.interactors.storage_interfaces.storage_interface import DestinationDTO
 from typing import List
 from django.db.models import Q
 from trip.models import Destination, Hotel, Rating, Booking
+from trip_gql.destination.types.types import InvalidUser
 
 
 class StorageImplementation(StorageInterface):
@@ -64,8 +65,13 @@ class StorageImplementation(StorageInterface):
                 user_id=destinationObj.user_id
             ) for destinationObj in destination_objs]
 
+    def validate_hotel_customer(self,destination_id: int, user_id: str):
+        check = Destination.objects.filter(destination_id = destination_id, user_id = user_id).exists()
 
-    def add_hotel(self, add_hotel_dto: MutateHotelDTO):
+        if not check:
+            raise InvalidUser
+
+    def add_hotel(self, user_id:str, add_hotel_dto: MutateHotelDTO):
 
         check = Destination.objects.filter(id=add_hotel_dto.destination_id).exists()
 
@@ -82,7 +88,7 @@ class StorageImplementation(StorageInterface):
         )
 
         hotel_dto = HotelDTO(
-            id = hotel_obj.id,
+            hotel_id = hotel_obj.id,
             name = hotel_obj.name,
             description = hotel_obj.description,
             tariff = hotel_obj.tariff,
@@ -170,7 +176,7 @@ class StorageImplementation(StorageInterface):
             checkin_date = booking_obj.checkin_date,
             checkout_date = booking_obj.checkout_date,
             total_amount = booking_obj.total_amount,
-            id=booking_obj.id,
+            booking_id=booking_obj.id,
             destination_id = booking_obj.destination_id
         )
 
@@ -206,7 +212,7 @@ class StorageImplementation(StorageInterface):
             checkin_date=booking.checkin_date,
             checkout_date=booking.checkout_date,
             total_amount=booking.total_amount,
-            id=booking.id
+            booking_id=booking.id
         )
 
         return booking_dto
@@ -256,7 +262,7 @@ class StorageImplementation(StorageInterface):
         hotelObj.save()
 
         hotel_dto = HotelDTO(
-            id=hotelObj.id,
+            hotel_id=hotelObj.id,
             destination_id=hotelObj.destination_id,
             name=hotelObj.name,
             description=hotelObj.description,
@@ -273,7 +279,7 @@ class StorageImplementation(StorageInterface):
 
         return [
             HotelDTO(
-                id = hotel_obj.id,
+                hotel_id = hotel_obj.id,
                 name = hotel_obj.name,
                 description = hotel_obj.description,
                 tariff = hotel_obj.tariff,

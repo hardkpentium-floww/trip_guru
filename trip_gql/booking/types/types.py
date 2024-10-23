@@ -2,7 +2,7 @@ import graphene
 
 
 class Booking(graphene.ObjectType):
-    id = graphene.Int()
+    booking_id = graphene.Int()
     user_id = graphene.String()
     destination_id = graphene.Int()
     hotel_id = graphene.Int()
@@ -10,9 +10,19 @@ class Booking(graphene.ObjectType):
     checkout_date = graphene.String()
     total_amount = graphene.Int()
 
+class UpdateBookingParams(graphene.ObjectType):
+    booking_id = graphene.Int()
+    checkin_date = graphene.String()
+    checkout_date = graphene.String()
+    total_amount = graphene.Int()
+
 
 class BookingNotPossible(graphene.ObjectType):
-    hotel_id = graphene.Int()
+    booking_id = graphene.Int()
+
+class UpdateBookingResponse(graphene.Union):
+    class Meta:
+        types = (Booking,BookingNotPossible)
 
 class BookHotelResponse(graphene.ObjectType):
     class Meta:
@@ -25,4 +35,4 @@ class BookHotelParams(graphene.ObjectType):
     checkout_date = graphene.String()
     hotel_id = graphene.Int()
     destination_id = graphene.Int()
-    total_amount = graphene.Int()
+    tariff = graphene.Int()
