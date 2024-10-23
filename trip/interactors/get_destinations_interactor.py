@@ -1,4 +1,4 @@
-from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, StorageInterface
+from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, StorageInterface, GetDestinationsDTO
 from typing import List
 
 class GetDestinationsInteractor:
@@ -7,7 +7,7 @@ class GetDestinationsInteractor:
         self.storage = storage
 
     def get_destinations(self,
-                 get_destinations_dto : List[DestinationDTO]
+                 get_destinations_dto : GetDestinationsDTO
                  ) :
 
 

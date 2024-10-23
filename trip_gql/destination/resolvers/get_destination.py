@@ -13,9 +13,9 @@ def resolve_get_destination(self, info):
     interactor = GetDestinationInteractor(storage=storage)
 
     try:
-        hotel_dto = interactor.get_destination(destination_id=self.params.id)
+        hotel_dto = interactor.get_destination(destination_id=self.params.destination_id)
     except InvalidDestination:
-        return DestinationNotFound(id=self.params.id)
+        return DestinationNotFound(destination_id=self.params.destination_id)
 
     return GetDestinationResponse(
         Destination(

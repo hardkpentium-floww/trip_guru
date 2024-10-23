@@ -9,6 +9,12 @@ class DestinationDTO:
     tags: str
     user_id: str
 
+@dataclass()
+class MutateDestinationDTO:
+    name: str = None
+    description: str = None
+    tags: str= None
+    user_id: str= None
 
 @dataclass()
 class HotelDTO:
@@ -19,13 +25,31 @@ class HotelDTO:
     image_urls: str
     destination_id: int
 
+@dataclass()
+class MutateHotelDTO:
+    name: str= None
+    description: str= None
+    tariff: int= None
+    image_urls: str= None
+    destination_id: int= None
+
 
 @dataclass()
 class RatingDTO:
+    id: int
     rating: int
     user_id: str
     review: str
     destination_id: int
+
+
+@dataclass()
+class MutateRatingDTO:
+    rating: int= None
+    user_id: str= None
+    review: str= None
+    destination_id: int= None
+
 
 @dataclass()
 class UserDTO:
@@ -45,6 +69,15 @@ class BookingDTO:
     total_amount: int
 
 @dataclass()
+class MutateBookingDTO:
+    hotel_id: int= None
+    user_id: str= None
+    destination_id: int= None
+    checkin_date: str= None
+    checkout_date: str= None
+    total_amount: int= None
+
+@dataclass()
 class GetDestinationsDTO:
   offset = int
   limit = int
@@ -55,11 +88,11 @@ class GetDestinationsDTO:
 class UpdateBookingDTO:
     booking_id: int
     user_id: str
-    checkin_date: str
-    checkout_date: str
+    checkin_date: str= None
+    checkout_date: str= None
 
 class StorageInterface:
-    def add_destination(self, add_destination_dto: DestinationDTO)->DestinationDTO :
+    def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
         pass
 
     def validate_admin_user(self, user_id: str):
@@ -68,28 +101,28 @@ class StorageInterface:
     def get_destination(self, destination_id: int)->DestinationDTO:
         pass
 
-    def get_destinations(self, get_destination_dto: GetDestinationsDTO)-> List[DestinationDTO]:
+    def get_destinations(self, get_destinations_dto: GetDestinationsDTO)-> List[DestinationDTO]:
         pass
 
-    def add_hotel(self, add_hotel_dto: HotelDTO):
+    def add_hotel(self, add_hotel_dto: MutateHotelDTO):
         pass
 
     def get_hotel(self, hotel_id: int)->HotelDTO    :
         pass
 
-    def add_rating(self, add_rating_dto: RatingDTO):
+    def add_rating(self, add_rating_dto: MutateRatingDTO):
         pass
 
-    def book_hotel(self, book_hotel_dto: BookingDTO):
+    def book_hotel(self,hotel_id: int, book_hotel_dto: MutateBookingDTO):
         pass
 
-    def update_booking(self, update_booking_dto: UpdateBookingDTO)->BookingDTO:
+    def update_booking(self, booking_id: int, update_booking_dto: UpdateBookingDTO)->BookingDTO:
         pass
 
-    def update_destination(self, update_destination_dto: DestinationDTO)->DestinationDTO:
+    def update_destination(self, destination_id: int, update_destination_dto: MutateDestinationDTO)->DestinationDTO:
         pass
 
-    def update_hotel(self, update_hotel_dto: HotelDTO)->HotelDTO:
+    def update_hotel(self,hotel_id: int, update_hotel_dto: MutateHotelDTO)->HotelDTO:
         pass
 
     def get_hotels(self, destination_id: int) -> List[HotelDTO]:

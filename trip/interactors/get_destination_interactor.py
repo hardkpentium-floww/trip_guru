@@ -7,7 +7,7 @@ class GetDestinationInteractor:
         self.storage = storage
 
     def get_destination(self,
-                 destination_name: str
+                 destination_id: int
                  ) :
 
 
@@ -16,7 +16,7 @@ class GetDestinationInteractor:
 
 
         destination_dto = self.storage.get_destination(
-            destination_name= destination_name
+            destination_id= destination_id
         )
 
         return destination_dto

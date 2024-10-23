@@ -1,4 +1,5 @@
-from trip.interactors.storage_interfaces.storage_interface import StorageInterface, RatingDTO
+from trip.interactors.storage_interfaces.storage_interface import StorageInterface, RatingDTO, MutateHotelDTO, \
+    MutateRatingDTO
 
 
 class AddRatingInteractor:
@@ -7,7 +8,7 @@ class AddRatingInteractor:
         self.storage = storage
 
     def add_rating(self,
-                 add_rating_dto: RatingDTO
+                 add_rating_dto: MutateRatingDTO
                  ) :
 
 

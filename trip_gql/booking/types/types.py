@@ -20,3 +20,9 @@ class BookHotelResponse(graphene.ObjectType):
 
 
 class BookHotelParams(graphene.ObjectType):
+    user_id = graphene.String()
+    checkin_date = graphene.String()
+    checkout_date = graphene.String()
+    hotel_id = graphene.Int()
+    destination_id = graphene.Int()
+    total_amount = graphene.Int()

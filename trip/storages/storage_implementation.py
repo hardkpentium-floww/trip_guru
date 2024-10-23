@@ -1,14 +1,15 @@
 from trip.exceptions.custom_exceptions import InvalidBooking, InvalidAdminUser, InvalidDestination, \
     BookingScheduleOverlap
 from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, GetDestinationsDTO, HotelDTO, \
-    RatingDTO, BookingDTO, StorageInterface, UpdateBookingDTO
+    RatingDTO, BookingDTO, StorageInterface, UpdateBookingDTO, MutateDestinationDTO, MutateHotelDTO, MutateRatingDTO, \
+    MutateBookingDTO
 from typing import List
 from django.db.models import Q
 from trip.models import Destination, Hotel, Rating, Booking
 
 
 class StorageImplementation(StorageInterface):
-    def add_destination(self, add_destination_dto: DestinationDTO)->DestinationDTO :
+    def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
         destinationObj = Destination.objects.create(
             name = add_destination_dto.name,
             description = add_destination_dto.description,
@@ -64,7 +65,7 @@ class StorageImplementation(StorageInterface):
             ) for destinationObj in destination_objs]
 
 
-    def add_hotel(self, add_hotel_dto: HotelDTO):
+    def add_hotel(self, add_hotel_dto: MutateHotelDTO):
 
         check = Destination.objects.filter(id=add_hotel_dto.destination_id).exists()
 
@@ -105,7 +106,7 @@ class StorageImplementation(StorageInterface):
 
         return hotel_dto
 
-    def add_rating(self, add_rating_dto: RatingDTO):
+    def add_rating(self, add_rating_dto: MutateRatingDTO):
 
         check = Destination.objects.filter(id=add_rating_dto.destination_id).exists()
 
@@ -128,7 +129,7 @@ class StorageImplementation(StorageInterface):
 
         return rating_dto
 
-    def book_hotel(self, book_hotel_dto: BookingDTO):
+    def book_hotel(self,hotel_id: int, book_hotel_dto: MutateBookingDTO):
         checkin_date = book_hotel_dto.checkin_date
         checkout_date = book_hotel_dto.checkout_date
         user_id = book_hotel_dto.user_id
@@ -155,11 +156,12 @@ class StorageImplementation(StorageInterface):
 
         booking_obj = Booking.objects.create(
             user_id = book_hotel_dto.user_id,
-            hotel_id = book_hotel_dto.hotel_id,
+            hotel_id = hotel_id,
             checkin_date = book_hotel_dto.checkin_date,
             checkout_date = book_hotel_dto.checkout_date,
             tariff = book_hotel_dto.total_amount,
-            destination_id = book_hotel_dto.destination_id
+            destination_id = book_hotel_dto.destination_id,
+            total_amount = book_hotel_dto.total_amount
         )
 
         booking_dto = BookingDTO(
@@ -174,13 +176,12 @@ class StorageImplementation(StorageInterface):
 
         return booking_dto
 
-    def update_booking(self, update_booking_dto: UpdateBookingDTO)->BookingDTO:
+    def update_booking(self, booking_id: int, update_booking_dto: UpdateBookingDTO)->BookingDTO:
         checkin_date = update_booking_dto.checkin_date
         checkout_date = update_booking_dto.checkout_date
-        user_id = update_booking_dto.user_id
 
         overlapping_bookings = Booking.objects.filter(
-            Q(user_id=user_id) & (
+            Q(id=booking_id) & (
                     Q(checkin_date__lt=checkout_date) &
                     Q(checkout_date__gt=checkin_date)
             )
@@ -212,9 +213,9 @@ class StorageImplementation(StorageInterface):
 
 
 
-    def update_destination(self, update_destination_dto: DestinationDTO)->DestinationDTO:
+    def update_destination(self, destination_id: int, update_destination_dto: MutateDestinationDTO)->DestinationDTO:
 
-        destinationObj = Destination.objects.get(id=update_destination_dto.id)
+        destinationObj = Destination.objects.get(id=destination_id)
 
         if update_destination_dto.name:
             destinationObj.name = update_destination_dto.name
@@ -236,9 +237,9 @@ class StorageImplementation(StorageInterface):
 
         return destination_dto
 
-    def update_hotel(self, update_hotel_dto: HotelDTO)->HotelDTO:
+    def update_hotel(self,hotel_id: int, update_hotel_dto: MutateHotelDTO)->HotelDTO:
 
-        hotelObj = Hotel.objects.get(id=update_hotel_dto.id)
+        hotelObj = Hotel.objects.get(id=hotel_id)
 
         if update_hotel_dto.name:
             hotelObj.name = update_hotel_dto.name
