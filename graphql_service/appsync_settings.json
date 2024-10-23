@@ -1,0 +1,231 @@
+{
+  "functions": [],
+  "resolvers": {
+    "DEFAULT_RESOLVER": {
+      "dataSourceName": "Lambda_Source",
+      "requestMappingTemplate": "graphql_service/templates/request.vtl",
+      "responseMappingTemplate": "graphql_service/templates/response.vtl",
+      "kind": "UNIT"
+    },
+    "DEFAULT_SUBSCRIPTION_RESOLVER": {
+      "dataSourceName": "Dummy_Data_Source",
+      "requestMappingTemplate": "graphql_service/templates/subscription_request.vtl",
+      "responseMappingTemplate": "graphql_service/templates/subscription_response.vtl",
+      "kind": "UNIT"
+    },
+    "DEFAULT_RESOLVER_SUBSCRIPTIONS": []
+  },
+  "alpha": {
+    "apiName": "sales-crm-alpha",
+    "authenticationType": "AWS_LAMBDA",
+    "domain": "crm-alpha-gql.flowwlabs.tech",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "region": "ap-south-1",
+    "xray_tracing": true,
+    "logs_config": {
+      "enabled": false,
+      "fieldLogLevel": "ALL",
+      "excludeVerboseContent": true
+    },
+    "cache_config": {
+      "enabled": false,
+      "ttl": 0,
+      "transitEncryptionEnabled": false,
+      "atRestEncryptionEnabled": false,
+      "apiCachingBehavior": "PER_RESOLVER_CACHING",
+      "type": "SMALL"
+    },
+    "lambdaAuthorizerConfig": {
+      "authorizerResultTtlInSeconds": 0,
+      "lambdaFunctionName": "sales-crm-backend-alpha-gql-w",
+      "region": "ap-south-1"
+    },
+    "dataSources": [
+      {
+        "name": "Lambda_Source",
+        "description": "",
+        "type": "AWS_LAMBDA",
+        "config": {
+          "lambdaFunctionName": "sales-crm-backend-alpha-gql-w",
+          "region": "ap-south-1"
+        }
+      },
+      {
+        "name": "Dummy_Data_Source",
+        "description": "",
+        "type": "NONE",
+        "config": {}
+      }
+    ]
+  },
+  "beta": {
+    "apiName": "sales-crm-beta",
+    "authenticationType": "AWS_LAMBDA",
+    "domain": "crm-beta-gql.flowwlabs.tech",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "region": "ap-south-1",
+    "xray_tracing": true,
+    "logs_config": {
+      "enabled": true,
+      "fieldLogLevel": "ALL",
+      "excludeVerboseContent": true
+    },
+    "cache_config": {
+      "enabled": false,
+      "ttl": 0,
+      "transitEncryptionEnabled": false,
+      "atRestEncryptionEnabled": false,
+      "apiCachingBehavior": "PER_RESOLVER_CACHING",
+      "type": "SMALL"
+    },
+    "lambdaAuthorizerConfig": {
+      "authorizerResultTtlInSeconds": 0,
+      "lambdaFunctionName": "sales-crm-backend-beta-gql-w",
+      "region": "ap-south-1"
+    },
+    "dataSources": [
+      {
+        "name": "Lambda_Source",
+        "description": "",
+        "type": "AWS_LAMBDA",
+        "config": {
+          "lambdaFunctionName": "sales-crm-backend-beta-gql-w",
+          "region": "ap-south-1"
+        }
+      },
+      {
+        "name": "Dummy_Data_Source",
+        "description": "",
+        "type": "NONE",
+        "config": {}
+      }
+    ]
+  },
+  "gamma": {
+    "apiName": "sales-crm-gamma",
+    "authenticationType": "AWS_LAMBDA",
+    "domain": "crm-gamma-gql.flowwlabs.tech",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "region": "ap-south-1",
+    "xray_tracing": true,
+    "logs_config": {
+      "enabled": true,
+      "fieldLogLevel": "ALL",
+      "excludeVerboseContent": true
+    },
+    "cache_config": {
+      "enabled": false,
+      "ttl": 0,
+      "transitEncryptionEnabled": false,
+      "atRestEncryptionEnabled": false,
+      "apiCachingBehavior": "PER_RESOLVER_CACHING",
+      "type": "SMALL"
+    },
+    "lambdaAuthorizerConfig": {
+      "authorizerResultTtlInSeconds": 0,
+      "lambdaFunctionName": "sales-crm-backend-gamma-gql-w",
+      "region": "ap-south-1"
+    },
+    "dataSources": [
+      {
+        "name": "Lambda_Source",
+        "description": "",
+        "type": "AWS_LAMBDA",
+        "config": {
+          "lambdaFunctionName": "sales-crm-backend-gamma-gql-w",
+          "region": "ap-south-1"
+        }
+      },
+      {
+        "name": "Dummy_Data_Source",
+        "description": "",
+        "type": "NONE",
+        "config": {}
+      }
+    ]
+  },
+  "staging": {
+    "apiName": "sales-crm-staging",
+    "authenticationType": "AWS_LAMBDA",
+    "domain": "sales-crm-backend-staging-gql.flowwai.work",
+    "certificate_arn": "arn:aws:acm:us-east-1:323762760957:certificate/0e55ecc1-2234-4f73-a501-9e652d076e05",
+    "region": "ap-south-1",
+    "logs_config": {
+      "enabled": true,
+      "fieldLogLevel": "ALL",
+      "excludeVerboseContent": true
+    },
+    "cache_config": {
+      "enabled": false,
+      "ttl": 0,
+      "transitEncryptionEnabled": false,
+      "atRestEncryptionEnabled": false,
+      "apiCachingBehavior": "PER_RESOLVER_CACHING",
+      "type": "SMALL"
+    },
+    "lambdaAuthorizerConfig": {
+      "authorizerResultTtlInSeconds": 0,
+      "lambdaFunctionName": "sales-crm-backend-staging-gql-w",
+      "region": "ap-south-1"
+    },
+    "dataSources": [
+      {
+        "name": "Lambda_Source",
+        "description": "",
+        "type": "AWS_LAMBDA",
+        "config": {
+          "lambdaFunctionName": "sales-crm-backend-staging-gql-w",
+          "region": "ap-south-1"
+        }
+      },
+      {
+        "name": "Dummy_Data_Source",
+        "description": "",
+        "type": "NONE",
+        "config": {}
+      }
+    ]
+  },
+  "prod": {
+    "apiName": "sales-crm-prod",
+    "authenticationType": "AWS_LAMBDA",
+    "domain": "sales-crm-backend-prod-gql.flowwai.work",
+    "certificate_arn": "arn:aws:acm:us-east-1:323762760957:certificate/0e55ecc1-2234-4f73-a501-9e652d076e05",
+    "region": "ap-south-1",
+    "logs_config": {
+      "enabled": true,
+      "fieldLogLevel": "ALL",
+      "excludeVerboseContent": true
+    },
+    "cache_config": {
+      "enabled": false,
+      "ttl": 0,
+      "transitEncryptionEnabled": false,
+      "atRestEncryptionEnabled": false,
+      "apiCachingBehavior": "PER_RESOLVER_CACHING",
+      "type": "SMALL"
+    },
+    "lambdaAuthorizerConfig": {
+      "authorizerResultTtlInSeconds": 0,
+      "lambdaFunctionName": "sales-crm-backend-prod-gql-w",
+      "region": "ap-south-1"
+    },
+    "dataSources": [
+      {
+        "name": "Lambda_Source",
+        "description": "",
+        "type": "AWS_LAMBDA",
+        "config": {
+          "lambdaFunctionName": "sales-crm-backend-prod-gql-w",
+          "region": "ap-south-1"
+        }
+      },
+      {
+        "name": "Dummy_Data_Source",
+        "description": "",
+        "type": "NONE",
+        "config": {}
+      }
+    ]
+  }
+}

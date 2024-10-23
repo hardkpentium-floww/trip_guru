@@ -1,0 +1,145 @@
+{
+  "alpha": {
+    "project_name": "trip-guru",
+    "s3_bucket": "ibuild-backend-common-code-bucket",
+    "memory_size": 1536,
+    "api_name": "trip-guru",
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "domain": "trip-guru-alpha.apigateway.in",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "django_settings": "trip_guru.settings.alpha",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "manage_roles": true,
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
+  },
+  "beta": {
+    "project_name": "trip-guru",
+    "s3_bucket": "ibuild-backend-common-code-bucket",
+    "memory_size": 1536,
+    "api_name": "trip-guru",
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "domain": "trip-guru-beta.apigateway.in",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "django_settings": "trip_guru.settings.beta",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "manage_roles": true,
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
+  },
+  "gamma": {
+    "project_name": "trip-guru",
+    "s3_bucket": "ibuild-backend-common-code-bucket",
+    "memory_size": 1536,
+    "api_name": "trip-guru",
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "django_settings": "trip_guru.settings.gamma",
+    "domain": "trip-guru-gamma.apigateway.in",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "log_level": "INFO",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "manage_roles": true,
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
+  },
+  "staging": {
+    "project_name": "trip-guru",
+    "s3_bucket": "ibuild-backend-common-code-bucket",
+    "memory_size": 1536,
+    "api_name": "trip-guru",
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "django_settings": "trip_guru.settings.staging",
+    "domain": "trip-guru-staging.apigateway.in",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "log_level": "INFO",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "manage_roles": true,
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
+  },
+  "prod": {
+    "project_name": "trip-guru",
+    "s3_bucket": "ibuild-backend-common-code-bucket",
+    "memory_size": 1536,
+    "api_name": "trip-guru",
+    "timeout_seconds": 300,
+    "aws_region": "ap-south-1",
+    "keep_warm": false,
+    "django_settings": "trip_guru.settings.prod",
+    "domain": "trip-guru-prod.apigateway.in",
+    "certificate_arn": "arn:aws:acm:us-east-1:607092105028:certificate/163b7c28-92eb-49bd-a60d-5094769276be",
+    "log_level": "INFO",
+    "cloudwatch_log_level": "INFO",
+    "cloudwatch_data_trace": true,
+    "cloudwatch_metrics_enabled": true,
+    "touch": false,
+    "exception_handler": "ib_sentry_wrapper.utils.zappa_sentry.capture_exceptions",
+    "runtime": "python3.7",
+    "manage_roles": true,
+    "vpc_config": {
+      "SubnetIds": [
+        "subnet-89f666c4",
+        "subnet-69f76724"
+      ],
+      "SecurityGroupIds": [
+        "sg-7071bb18"
+      ]
+    }
+  }
+}

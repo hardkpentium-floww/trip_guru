@@ -1,0 +1,67 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+union RestaurantResponse = Restaurant | RestaurantNotFound
+
+type AddRestaurant {
+  restaurant: RestaurantResponse
+}
+
+type GetOrdersResponse {
+  orders: [Int]
+}
+
+type GetRestaurantsResponse {
+  restaurants: [Restaurant]
+}
+
+type Restaurant {
+  id: String!
+  name: String!
+  location: String!
+  status: String!
+  user: User
+}
+
+type RestaurantNotFound {
+  restaurantId: String
+}
+
+type User {
+  id: String!
+  name: String!
+  phoneNo: String!
+}
+
+input AddRestaurantParams {
+  name: String!
+  location: String!
+  status: String!
+}
+
+input DeleteRestaurantParams {
+  id: String!
+  userId: String!
+}
+
+input UpdateRestaurantParams {
+  id: String!
+  name: String
+  location: String
+  status: String
+  userId: String
+}
+
+type Query {
+  getRestaurants: GetRestaurantsResponse
+  getOrdersForUsers: GetOrdersResponse
+  getAllRestaurants: GetRestaurantsResponse
+}
+
+type Mutation {
+  updateRestaurant(params: UpdateRestaurantParams!): RestaurantResponse!
+  deleteRestaurant(params: DeleteRestaurantParams!): RestaurantResponse!
+  addRestaurant(params: AddRestaurantParams!): AddRestaurant!
+}
