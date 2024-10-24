@@ -4,7 +4,8 @@ from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidDestinati
 from trip.interactors.storage_interfaces.storage_interface import MutateDestinationDTO
 from trip.interactors.update_destination_interactor import UpdateDestinationInteractor
 from trip.storages.storage_implementation import StorageImplementation
-from trip_gql.destination.types.types import Destination, InvalidUser,  \
+from trip_gql.common_errors import UserNotAdmin
+from trip_gql.destination.types.types import Destination,  \
     DestinationNotFound, UpdateDestinationResponse, UpdateDestinationParams
 
 
@@ -23,14 +24,14 @@ class UpdateDestination(graphene.Mutation):
             name = params.name,
             description = params.description,
             tags = params.tags,
-            user_id = params.user_id
+            destination_id=params.destination_id
         )
         try:
             destination_dto = interactor.update_destination(destination_id=params.destination_id, update_destination_dto=update_destination_dto)
         except InvalidAdminUser:
-            return InvalidUser(user_id=params.user_id)
+            return UserNotAdmin(user_id=info.context.user.id)
         except InvalidDestination:
-            return DestinationNotFound(restaurant_id=params.user_id)
+            return DestinationNotFound(destination_id=params.destination_id)
 
         return UpdateDestinationResponse(
             Destination(

@@ -15,7 +15,6 @@ class AddHotelInteractor:
 
         self.storage.validate_admin_user(user_id=user_id)
 
-
         hotel_dto = self.storage.add_hotel(
             user_id=user_id,
             add_hotel_dto= add_hotel_dto

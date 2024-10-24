@@ -3,65 +3,176 @@ schema {
   mutation: Mutation
 }
 
-union RestaurantResponse = Restaurant | RestaurantNotFound
+union AddDestinationResponse = Destination | UserNotAdmin
 
-type AddRestaurant {
-  restaurant: RestaurantResponse
+union AddHotelResponse = Hotel | UserNotAuthorized | DestinationNotFound
+
+union AddRatingResponse = Rating
+
+union BookHotelResponse = Booking | BookingNotPossible
+
+union GetDestinationResponse = Destination | DestinationNotFound
+
+union GetDestinationsResponse = Destinations | DestinationNotFound
+
+union GetHotelResponse = Hotel | HotelNotFound
+
+union GetHotelsResponse = Hotels | DestinationNotFound
+
+union UpdateBookingResponse = Booking | BookingNotPossible
+
+union UpdateDestinationResponse = Destination | UserNotAuthorized | DestinationNotFound
+
+union UpdateHotelResponse = Hotel | UserNotAuthorized
+
+type Booking {
+  id: Int
+  userId: String
+  destinationId: Int
+  hotelId: Int
+  checkinDate: String
+  checkoutDate: String
+  tariff: Int
 }
 
-type GetOrdersResponse {
-  orders: [Int]
+type BookingNotPossible {
+  bookingId: Int
 }
 
-type GetRestaurantsResponse {
-  restaurants: [Restaurant]
-}
-
-type Restaurant {
-  id: String!
-  name: String!
-  location: String!
-  status: String!
-  user: User
-}
-
-type RestaurantNotFound {
-  restaurantId: String
-}
-
-type User {
-  id: String!
-  name: String!
-  phoneNo: String!
-}
-
-input AddRestaurantParams {
-  name: String!
-  location: String!
-  status: String!
-}
-
-input DeleteRestaurantParams {
-  id: String!
-  userId: String!
-}
-
-input UpdateRestaurantParams {
-  id: String!
+type Destination {
+  id: Int
   name: String
-  location: String
-  status: String
+  description: String
+  userId: String
+  tags: String
+}
+
+type DestinationNotFound {
+  destinationId: Int
+}
+
+type Destinations {
+  destinations: [Destination]
+}
+
+type Hotel {
+  id: Int
+  name: String
+  description: String
+  imageUrls: String
+  destinationId: Int
+  tariff: Int
+}
+
+type HotelNotFound {
+  id: Int
+}
+
+type Hotels {
+  hotels: [Hotel]
+}
+
+type Rating {
+  ratingId: Int
+  userId: String
+  destinationId: Int
+  rating: Float
+  review: String
+}
+
+type UserNotAdmin {
   userId: String
 }
 
+type UserNotAuthorized {
+  userId: String
+}
+
+input AddDestinationParams {
+  name: String
+  description: String
+  tags: [String]
+}
+
+input AddHotelParams {
+  name: String
+  description: String
+  tariff: Int
+  imageUrls: [String]
+  destinationId: Int
+}
+
+input AddRatingParams {
+  userId: String
+  destinationId: Int
+  rating: Float
+  review: String
+}
+
+input BookHotelParams {
+  userId: String
+  checkinDate: String
+  checkoutDate: String
+  hotelId: Int
+  destinationId: Int
+  tariff: Int
+}
+
+input GetDestinationParams {
+  destinationId: Int
+}
+
+input GetDestinationsParams {
+  tag: String
+  offset: Int
+  limit: Int
+}
+
+input GetHotelParams {
+  hotelId: Int!
+}
+
+input GetHotelsParams {
+  destinationId: Int!
+}
+
+input UpdateBookingParams {
+  bookingId: Int
+  checkinDate: String
+  checkoutDate: String
+  totalAmount: Int
+}
+
+input UpdateDestinationParams {
+  destinationId: Int
+  name: String
+  description: String
+  userId: String
+  tags: [String]
+}
+
+input UpdateHotelParams {
+  hotelId: String!
+  name: String
+  description: String
+  totalAmount: Int
+  imageUrls: [String]
+  destinationId: Int
+}
+
 type Query {
-  getRestaurants: GetRestaurantsResponse
-  getOrdersForUsers: GetOrdersResponse
-  getAllRestaurants: GetRestaurantsResponse
+  getHotel(params: GetHotelParams!): GetHotelResponse
+  getHotelsForDestination(params: GetHotelsParams!): GetHotelsResponse
+  getDestination(params: GetDestinationParams!): GetDestinationResponse
+  getDestinations(params: GetDestinationsParams!): GetDestinationsResponse
 }
 
 type Mutation {
-  updateRestaurant(params: UpdateRestaurantParams!): RestaurantResponse!
-  deleteRestaurant(params: DeleteRestaurantParams!): RestaurantResponse!
-  addRestaurant(params: AddRestaurantParams!): AddRestaurant!
+  addDestination(params: AddDestinationParams!): AddDestinationResponse!
+  addHotel(params: AddHotelParams!): AddHotelResponse!
+  addRating(params: AddRatingParams!): AddRatingResponse!
+  bookHotel(params: BookHotelParams!): BookHotelResponse!
+  updateBooking(params: UpdateBookingParams!): UpdateBookingResponse!
+  updateDestination(params: UpdateDestinationParams!): UpdateDestinationResponse!
+  updateHotel(params: UpdateHotelParams!): UpdateHotelResponse!
 }

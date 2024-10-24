@@ -4,26 +4,22 @@ from trip.storages.storage_implementation import StorageImplementation
 from trip_gql.hotel.types.types import GetHotelParams, HotelNotFound, Hotel, GetHotelResponse
 
 
-def resolve_get_hotel(self, info):
-    class Arguments:
-        params = GetHotelParams(required=True)
+def resolve_get_hotel(root, info,params):
 
     storage = StorageImplementation()
     interactor = GetHotelInteractor(storage=storage)
 
 
     try:
-        hotel_dto = interactor.get_hotel(hotel_id=self.params.id)
+        hotel_dto = interactor.get_hotel(hotel_id=params.hotel_id)
     except InvalidHotel:
-        return HotelNotFound(id=self.params.id)
+        return HotelNotFound(id=params.id)
 
-    return GetHotelResponse(
-        Hotel(
-            id=str(hotel_dto.id),
+    return Hotel(
+            id=hotel_dto.id,
             name=hotel_dto.name,
             description=hotel_dto.description,
             tariff=hotel_dto.tariff,
             image_urls=hotel_dto.image_urls,
             destination_id=hotel_dto.destination_id
         )
-    )

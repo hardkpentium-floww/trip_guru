@@ -4,7 +4,7 @@ from trip.exceptions.custom_exceptions import InvalidAdminUser
 from trip.interactors.storage_interfaces.storage_interface import MutateHotelDTO
 from trip.interactors.update_hotel_interactor import UpdateHotelInteractor
 from trip.storages.storage_implementation import StorageImplementation
-from trip_gql.destination.types.types import InvalidUser
+from trip_gql.common_errors import UserNotAuthorized
 from trip_gql.hotel.types.types import Hotel, AddHotelResponse, AddHotelParams, UpdateHotelParams, UpdateHotelResponse
 
 
@@ -31,7 +31,7 @@ class UpdateHotel(graphene.Mutation):
         try:
             hotel_dto = interactor.update_hotel(user_id=info.context.user.id,hotel_id=params.hotel_id, update_hotel_dto=update_hotel_dto)
         except InvalidAdminUser:
-            return InvalidUser(user_id=info.context.user.id)
+            return UserNotAuthorized(user_id=info.context.user.id)
 
 
         return UpdateHotelResponse(

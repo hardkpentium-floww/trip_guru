@@ -1,17 +1,20 @@
+from ib_users.models import UserAccount
+from oauth2_provider.models import Application
+from oauth2_provider.models import AccessToken, RefreshToken
 from trip.exceptions.custom_exceptions import InvalidBooking, InvalidAdminUser, InvalidDestination, \
     BookingScheduleOverlap
 from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, GetDestinationsDTO, HotelDTO, \
     RatingDTO, BookingDTO, StorageInterface, UpdateBookingDTO, MutateDestinationDTO, MutateHotelDTO, MutateRatingDTO, \
-    MutateBookingDTO
+    MutateBookingDTO, SearchDestinationDTO, AccessTokenDTO, RefreshTokenDTO
 from typing import List
 from django.db.models import Q
-from trip.models import Destination, Hotel, Rating, Booking
-from trip_gql.destination.types.types import InvalidUser
+from trip.models import Destination, Hotel, Rating, Booking,User
+from trip.exceptions.custom_exceptions import InvalidUser
 
 
 class StorageImplementation(StorageInterface):
     def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
-        destinationObj = Destination.objects.create(
+        destination_obj = Destination.objects.create(
             name = add_destination_dto.name,
             description = add_destination_dto.description,
             tags = add_destination_dto.tags,
@@ -19,20 +22,106 @@ class StorageImplementation(StorageInterface):
 
         )
         destination_dto = DestinationDTO(
-            id = destinationObj.id,
-            name = destinationObj.name,
-            description = destinationObj.description,
-            tags = destinationObj.tags,
-            user_id = destinationObj.user_id
+            id = destination_obj.id,
+            name = destination_obj.name,
+            description = destination_obj.description,
+            tags = destination_obj.tags,
+            user_id = destination_obj.user_id
         )
 
         return destination_dto
 
+    def search_destination(self, search_destination_dto: SearchDestinationDTO)-> List[DestinationDTO]:
+
+        query = Q()
+        if search_destination_dto.name:
+            query |= Q(name__contains=search_destination_dto.name)
+
+        if search_destination_dto.tag:
+            query |= Q(tags__contains=search_destination_dto.tag)
+
+        destination_objs = Destination.objects.filter(query).all()
+
+        return [
+            DestinationDTO(
+                id=destinationObj.id,
+                name=destinationObj.name,
+                description=destinationObj.description,
+                tags=destinationObj.tags,
+                user_id = destinationObj.user_id
+            ) for destinationObj in destination_objs]
+
     def validate_admin_user(self, user_id: str):
-        check = Destination.objects.get(user_id = user_id)
+        check = user_id == 'e9ab68e1-95c2-41bc-966d-615a9cfd175d'
         if check:
             raise InvalidAdminUser
 
+    def validate_destination_id(self, destination_id: int):
+        check = Destination.objects.filter(id = destination_id).exists()
+        if not check:
+            raise InvalidDestination
+
+    def validate_user_id(self, user_id:str):
+        user = User.objects.filter(id=user_id).exists()
+        if not user:
+            raise InvalidUser
+
+    def logout(self, user_id: int):
+
+        application = Application.objects.get(name='trip_guru')
+        access_token = AccessToken.objects.get(user_id=user_id, application=application)
+
+        access_token.delete()
+
+        return
+
+    def get_user_account(self, user_id: str) -> UserAccount:
+        user = UserAccount.objects.get(user_id=user_id)
+        return user
+
+    def create_access_token(self,
+                            access_token_dto: AccessTokenDTO):
+
+        token = access_token_dto.token
+        user_id = access_token_dto.user_id
+        application_name = access_token_dto.application_name
+        expires = access_token_dto.expires
+        source_refresh_token = access_token_dto.source_refresh_token
+
+        user = self.get_user_account(user_id=user_id)
+        application = self.get_application_instance(application_name=application_name)
+
+        access_token = AccessToken.objects.create(
+            user=user,
+            token=token,
+            application=application,
+            expires=expires,
+            scope='read write'
+        )
+
+        return access_token
+
+    def create_refresh_token(self,
+            refresh_token_dto: RefreshTokenDTO):
+        token = refresh_token_dto.token
+        user_id = refresh_token_dto.user_id
+        application_name = refresh_token_dto.application_name
+        access_token_id = refresh_token_dto.access_token_id
+
+        application_id = self.get_application_instance(application_name=application_name).id
+        refresh_token = RefreshToken.objects.create(
+            user_id=user_id,
+            token=token,
+            application_id=application_id,
+            access_token_id=access_token_id
+
+        )
+
+        return refresh_token
+
+    def get_application_instance(self, application_name:str) -> Application:
+        application = Application.objects.filter(name=application_name).first()
+        return application
 
     def get_destination(self, destination_id: int)->DestinationDTO:
         destinationObj = Destination.objects.filter(
@@ -47,12 +136,12 @@ class StorageImplementation(StorageInterface):
 
         return destination_dto
 
-    def get_destinations(self, get_destination_dto: GetDestinationsDTO)-> List[DestinationDTO]:
+    def get_destinations(self, get_destinations_dto: GetDestinationsDTO)-> List[DestinationDTO]:
         destination_objs = Destination.objects.filter(
-            tags__contains = get_destination_dto.tag
+            tags__contains = get_destinations_dto.tag
         ).all()
-        offset = get_destination_dto.offset
-        limit = get_destination_dto.limit
+        offset = get_destinations_dto.offset
+        limit = get_destinations_dto.limit
 
         destination_objs = destination_objs[offset:offset+limit]
 
@@ -75,8 +164,8 @@ class StorageImplementation(StorageInterface):
 
         check = Destination.objects.filter(id=add_hotel_dto.destination_id).exists()
 
-        if check:
-            return InvalidDestination
+        if not check:
+            raise InvalidDestination
 
 
         hotel_obj = Hotel.objects.create(
@@ -88,12 +177,13 @@ class StorageImplementation(StorageInterface):
         )
 
         hotel_dto = HotelDTO(
-            hotel_id = hotel_obj.id,
+            id = hotel_obj.id,
             name = hotel_obj.name,
             description = hotel_obj.description,
             tariff = hotel_obj.tariff,
             image_urls = hotel_obj.image_urls,
             destination_id = hotel_obj.destination_id
+
         )
 
         return hotel_dto
@@ -103,6 +193,7 @@ class StorageImplementation(StorageInterface):
             id = hotel_id
         ).first()
         hotel_dto = HotelDTO(
+            id = hotel_obj.id,
             name = hotel_obj.name,
             description = hotel_obj.description,
             tariff = hotel_obj.tariff,
@@ -273,13 +364,17 @@ class StorageImplementation(StorageInterface):
         return hotel_dto
 
     def get_hotels(self, destination_id: int)->List[HotelDTO]:
+        check = Destination.objects.filter(id=destination_id).exists()
+        if not check:
+            raise InvalidDestination
+
         hotel_objs = Hotel.objects.filter(
-            destination__id = destination_id
+            destination_id = destination_id
         ).all()
 
         return [
             HotelDTO(
-                hotel_id = hotel_obj.id,
+                id = hotel_obj.id,
                 name = hotel_obj.name,
                 description = hotel_obj.description,
                 tariff = hotel_obj.tariff,

@@ -73,7 +73,7 @@ from ib_common.logger.log_custom_formatter import LogCustomFormatter
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'filters': {
         'request_id': {
             '()': 'log_request_id.filters.RequestIDFilter'
@@ -192,6 +192,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',  # django sessions used in admin
     'django.contrib.messages',  # info, success, error message in response. admin requires this
     'django.contrib.staticfiles',  # host the static files
+
 ]
 
 THIRD_PARTY_APPS_BASE = [

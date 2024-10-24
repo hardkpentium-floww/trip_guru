@@ -8,8 +8,6 @@ class Rating(graphene.ObjectType):
     rating = graphene.Float()
     review = graphene.String()
 
-class UserNotFound(graphene.ObjectType):
-    user_id = graphene.String()
 
 class AddRatingParams(graphene.InputObjectType):
     user_id = graphene.String()

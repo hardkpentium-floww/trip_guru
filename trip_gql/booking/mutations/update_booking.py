@@ -33,7 +33,7 @@ class UpdateBooking(graphene.Mutation):
         try:
             booking_dto = interactor.update_booking(update_booking_dto=update_booking_dto)
         except BookingScheduleOverlap:
-            return BookingNotPossible(hotel_id=params.user_id)
+            return BookingNotPossible(booking_id=params.booking_id)
 
 
         return UpdateBookingResponse(

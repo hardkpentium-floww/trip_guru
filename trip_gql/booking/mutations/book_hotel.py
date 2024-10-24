@@ -2,7 +2,7 @@ import graphene
 
 from trip.exceptions.custom_exceptions import BookingScheduleOverlap
 from trip.interactors.book_hotel_interactor import BookHotelInteractor
-from trip.interactors.storage_interfaces.storage_interface import HotelDTO, BookingDTO, MutateBookingDTO
+from trip.interactors.storage_interfaces.storage_interface import MutateBookingDTO
 from trip.storages.storage_implementation import StorageImplementation
 from trip_gql.booking.types.types import BookingNotPossible, BookHotelResponse, BookHotelParams, Booking
 from trip_gql.hotel.types.types import Hotel

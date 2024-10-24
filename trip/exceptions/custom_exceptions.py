@@ -16,3 +16,6 @@ class InvalidBooking(Exception):
 
 class BookingScheduleOverlap(Exception):
     pass
+
+class InvalidUser(Exception):
+    pass

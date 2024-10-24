@@ -5,24 +5,19 @@ from trip_gql.destination.types.types import GetDestinationsParams, GetDestinati
     Destination, GetDestinationParams, GetDestinationResponse
 
 
-def resolve_get_destination(self, info):
-    class Arguments:
-        params = GetDestinationParams(required=True)
-
+def resolve_get_destination(root, info, params):
     storage = StorageImplementation()
     interactor = GetDestinationInteractor(storage=storage)
 
     try:
-        hotel_dto = interactor.get_destination(destination_id=self.params.destination_id)
+        destination_dto = interactor.get_destination(destination_id=params.destination_id)
     except InvalidDestination:
-        return DestinationNotFound(destination_id=self.params.destination_id)
+        return DestinationNotFound(destination_id=params.destination_id)
 
-    return GetDestinationResponse(
-        Destination(
-            id = hotel_dto.id,
-            name = hotel_dto.name,
-            description = hotel_dto.description,
-            tags = hotel_dto.tags,
-            user_id= hotel_dto.user_id
+    return Destination(
+            id = destination_dto.id,
+            name = destination_dto.name,
+            description = destination_dto.description,
+            tags = destination_dto.tags,
+            user_id= destination_dto.user_id
         )
-    )

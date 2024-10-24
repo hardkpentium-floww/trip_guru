@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 import os
 
-from graphql_service.gql_dev_view import GraphQLViewDev
+from graphql_service.graphql_views_dev import GraphQLViewDev
 
 api = []
 

@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 from typing import List
+from oauth2_provider.models import Application
+from abc import abstractmethod
+from datetime import datetime
+
 
 @dataclass()
 class DestinationDTO:
@@ -11,6 +15,7 @@ class DestinationDTO:
 
 @dataclass()
 class MutateDestinationDTO:
+    destination_id: int = None
     name: str = None
     description: str = None
     tags: str= None
@@ -18,7 +23,7 @@ class MutateDestinationDTO:
 
 @dataclass()
 class HotelDTO:
-    hotel_id: int
+    id: int
     name: str
     description: str
     tariff: int
@@ -81,10 +86,17 @@ class MutateBookingDTO:
 
 @dataclass()
 class GetDestinationsDTO:
-  offset = int
-  limit = int
-  tag = str
+  offset : int
+  limit : int
+  tag : str
 
+
+@dataclass()
+class SearchDestinationDTO:
+    name: str
+    offset : int
+    limit : int
+    tag:str
 
 @dataclass()
 class UpdateBookingDTO:
@@ -93,43 +105,113 @@ class UpdateBookingDTO:
     checkin_date: str= None
     checkout_date: str= None
 
+
+@dataclass()
+class AccessTokenDTO:
+    user_id :str
+    token :str
+    application_name:str
+    expires:datetime
+    scope :str  # Define the scope based on your requirement
+    source_refresh_token :str
+
+
+@dataclass()
+class RefreshTokenDTO:
+    user_id :str
+    token :str
+    application_name:str
+    access_token_id: int
+
+@dataclass()
+class AuthenticationTokensDTO:
+    access_token: str
+    refresh_token: str
+    expires_in: datetime
+    scope: str
+    token_type: str
+
+
 class StorageInterface:
+    @abstractmethod
     def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
         pass
 
+    @abstractmethod
+    def validate_destination_id(self, destination_id: int):
+        pass
+
+    @abstractmethod
+    def search_destination(self, search_destination_dto: SearchDestinationDTO)-> List[DestinationDTO]:
+        pass
+
+    @abstractmethod
+    def create_refresh_token(self,
+                             refresh_token_dto: RefreshTokenDTO):
+        pass
+
+    @abstractmethod
+    def create_access_token(self,
+                            access_token_dto: AccessTokenDTO):
+        pass
+
+    @abstractmethod
+    def validate_user_id(self, user_id:str):
+        pass
+
+    @abstractmethod
+    def logout(self, user_id: int):
+        pass
+
+    @abstractmethod
+    def get_application_instance(self, application_name: str) -> Application:
+        pass
+
+    @abstractmethod
     def validate_admin_user(self, user_id: str):
         pass
 
+    @abstractmethod
     def validate_hotel_customer(self,destination_id: int, user_id: str):
         pass
 
+    @abstractmethod
     def get_destination(self, destination_id: int)->DestinationDTO:
         pass
 
+    @abstractmethod
     def get_destinations(self, get_destinations_dto: GetDestinationsDTO)-> List[DestinationDTO]:
         pass
 
+    @abstractmethod
     def add_hotel(self,user_id: str, add_hotel_dto: MutateHotelDTO):
         pass
 
+    @abstractmethod
     def get_hotel(self, hotel_id: int)->HotelDTO    :
         pass
 
+    @abstractmethod
     def add_rating(self, add_rating_dto: MutateRatingDTO):
         pass
 
+    @abstractmethod
     def book_hotel(self,hotel_id: int, book_hotel_dto: MutateBookingDTO):
         pass
 
+    @abstractmethod
     def update_booking(self, booking_id: int, update_booking_dto: MutateBookingDTO)->BookingDTO:
         pass
 
+    @abstractmethod
     def update_destination(self, destination_id: int, update_destination_dto: MutateDestinationDTO)->DestinationDTO:
         pass
 
+    @abstractmethod
     def update_hotel(self,hotel_id: int, update_hotel_dto: MutateHotelDTO)->HotelDTO:
         pass
 
+    @abstractmethod
     def get_hotels(self, destination_id: int) -> List[HotelDTO]:
         pass
     # def get_user(self, user_id: str):

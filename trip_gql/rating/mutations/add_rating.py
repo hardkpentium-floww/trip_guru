@@ -1,11 +1,11 @@
 import graphene
 
-from trip.exceptions.custom_exceptions import InvalidAdminUser
+from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidUser
 from trip.interactors.add_rating_interactor import AddRatingInteractor
 from trip.interactors.storage_interfaces.storage_interface import MutateHotelDTO, MutateRatingDTO
 from trip.storages.storage_implementation import StorageImplementation
-from trip_gql.destination.types.types import InvalidUser
-from trip_gql.rating.types.types import AddRatingResponse, AddRatingParams, Rating, UserNotFound
+from trip_gql.common_errors import UserNotAuthorized
+from trip_gql.rating.types.types import AddRatingParams, AddRatingResponse, Rating
 
 
 class AddRating(graphene.Mutation):
@@ -29,7 +29,7 @@ class AddRating(graphene.Mutation):
         try:
             rating_dto = interactor.add_rating(add_rating_dto=add_rating_dto)
         except InvalidUser:
-            return UserNotFound(user_id=info.context.user.id)
+            return UserNotAuthorized(user_id=info.context.user.id)
 
 
         return AddRatingResponse(

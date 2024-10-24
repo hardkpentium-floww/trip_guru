@@ -1,35 +1,35 @@
 import graphene
 
+from trip_gql.common_errors import BookingNotPossible
+
 
 class Booking(graphene.ObjectType):
-    booking_id = graphene.Int()
+    id = graphene.Int()
     user_id = graphene.String()
     destination_id = graphene.Int()
     hotel_id = graphene.Int()
     checkin_date = graphene.String()
     checkout_date = graphene.String()
-    total_amount = graphene.Int()
+    tariff = graphene.Int()
 
-class UpdateBookingParams(graphene.ObjectType):
+class UpdateBookingParams(graphene.InputObjectType):
     booking_id = graphene.Int()
     checkin_date = graphene.String()
     checkout_date = graphene.String()
     total_amount = graphene.Int()
 
 
-class BookingNotPossible(graphene.ObjectType):
-    booking_id = graphene.Int()
 
 class UpdateBookingResponse(graphene.Union):
     class Meta:
         types = (Booking,BookingNotPossible)
 
-class BookHotelResponse(graphene.ObjectType):
+class BookHotelResponse(graphene.Union):
     class Meta:
         types = (Booking,BookingNotPossible)
 
 
-class BookHotelParams(graphene.ObjectType):
+class BookHotelParams(graphene.InputObjectType):
     user_id = graphene.String()
     checkin_date = graphene.String()
     checkout_date = graphene.String()
