@@ -2,6 +2,8 @@ import graphene
 
 from trip_gql.booking.mutations.book_hotel import BookHotel
 from trip_gql.booking.mutations.update_booking import UpdateBooking
+from trip_gql.booking.resolvers.get_bookings_for_user import resolve_get_bookings_for_user
+from trip_gql.booking.types.types import GetBookingsForUserResponse, GetBookingsForUserParams
 from trip_gql.destination.mutations.add_destination import AddDestination
 from trip_gql.destination.mutations.update_destination import UpdateDestination
 from trip_gql.destination.resolvers.get_destination import resolve_get_destination
@@ -40,6 +42,12 @@ class Query(graphene.ObjectType):
         GetDestinationsResponse,
         params = GetDestinationsParams(required=True),
         resolver=resolve_get_destinations
+    )
+
+    get_bookings_for_user = graphene.Field(
+        GetBookingsForUserResponse,
+        params = GetBookingsForUserParams(required=True),
+        resolver=resolve_get_bookings_for_user
     )
 
 

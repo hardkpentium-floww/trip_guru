@@ -23,7 +23,7 @@ class LoginInteractor:
         access_token_dto = AccessTokenDTO(
             user_id=user_id,
             token=access_token_str,
-            application_name="trip_guru",
+            application_name="trip-guru",
             expires=expires,
             scope='read write',
             source_refresh_token=""
@@ -35,7 +35,7 @@ class LoginInteractor:
         refresh_token_dto = RefreshTokenDTO(
             user_id=user_id,
             token=refresh_token_str,
-            application_name="trip_guru",
+            application_name="trip-guru",
             access_token_id=access_token.id
         )
         refresh_token = self.storage.create_refresh_token(

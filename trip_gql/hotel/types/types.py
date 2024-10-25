@@ -16,7 +16,7 @@ class AddHotelParams(graphene.InputObjectType):
     name = graphene.String()
     description = graphene.String()
     tariff = graphene.Int()
-    image_urls = graphene.List(graphene.String)
+    image_urls = graphene.String()
     destination_id = graphene.Int()
 
 
@@ -26,12 +26,13 @@ class AddHotelResponse(graphene.Union):
         types = (Hotel,UserNotAuthorized, DestinationNotFound,)
 
 class UpdateHotelParams(graphene.InputObjectType):
-    hotel_id = graphene.String(required=True)
+    hotel_id = graphene.Int(required=True)
     name = graphene.String()
     description = graphene.String()
     total_amount = graphene.Int()
-    image_urls = graphene.List(graphene.String)
+    image_urls = graphene.String()
     destination_id = graphene.Int()
+    tariff = graphene.Int()
 
 class UpdateHotelResponse(graphene.Union):
     class Meta:

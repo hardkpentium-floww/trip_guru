@@ -7,7 +7,7 @@ from django_swagger_utils.drf_server.utils.decorator.interface_decorator \
 
 @validate_decorator(validator_class=ValidatorClass)
 def api_wrapper(*args, **kwargs):
-    user_id = kwargs['user'].id
+    user_id = kwargs['user'].user_id
 
     storage = StorageImplementation()
     interactor = LogoutInteractor(storage=storage)

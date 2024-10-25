@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Destination(models.Model):
+class  Destination(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     description = models.TextField()

@@ -214,6 +214,12 @@ class StorageInterface:
     @abstractmethod
     def get_hotels(self, destination_id: int) -> List[HotelDTO]:
         pass
+
+    @abstractmethod
+
+    def get_bookings_for_user(self, user_id: str, offset: int, limit: int) -> List[BookingDTO]:
+        pass
+
     # def get_user(self, user_id: str):
     #     pass
 

@@ -1,5 +1,7 @@
 import graphene
 
+from trip_gql.common_errors import UserNotAuthorized, DestinationNotFound
+
 
 class Rating(graphene.ObjectType):
     rating_id = graphene.Int()
@@ -17,5 +19,5 @@ class AddRatingParams(graphene.InputObjectType):
 
 class AddRatingResponse(graphene.Union):
     class Meta:
-        types = (Rating,)
+        types = (Rating,DestinationNotFound,UserNotAuthorized)
 

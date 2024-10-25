@@ -7,7 +7,7 @@ union AddDestinationResponse = Destination | UserNotAdmin
 
 union AddHotelResponse = Hotel | UserNotAuthorized | DestinationNotFound
 
-union AddRatingResponse = Rating
+union AddRatingResponse = Rating | DestinationNotFound | UserNotAuthorized
 
 union BookHotelResponse = Booking | BookingNotPossible
 
@@ -33,10 +33,12 @@ type Booking {
   checkinDate: String
   checkoutDate: String
   tariff: Int
+  totalAmount: Int
 }
 
 type BookingNotPossible {
   bookingId: Int
+  hotelId: Int
 }
 
 type Destination {
@@ -91,14 +93,14 @@ type UserNotAuthorized {
 input AddDestinationParams {
   name: String
   description: String
-  tags: [String]
+  tags: String
 }
 
 input AddHotelParams {
   name: String
   description: String
   tariff: Int
-  imageUrls: [String]
+  imageUrls: String
   destinationId: Int
 }
 
@@ -148,16 +150,17 @@ input UpdateDestinationParams {
   name: String
   description: String
   userId: String
-  tags: [String]
+  tags: String
 }
 
 input UpdateHotelParams {
-  hotelId: String!
+  hotelId: Int!
   name: String
   description: String
   totalAmount: Int
-  imageUrls: [String]
+  imageUrls: String
   destinationId: Int
+  tariff: Int
 }
 
 type Query {

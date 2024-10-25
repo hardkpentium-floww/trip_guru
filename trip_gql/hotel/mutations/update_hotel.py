@@ -29,18 +29,15 @@ class UpdateHotel(graphene.Mutation):
         )
 
         try:
-            hotel_dto = interactor.update_hotel(user_id=info.context.user.id,hotel_id=params.hotel_id, update_hotel_dto=update_hotel_dto)
+            hotel_dto = interactor.update_hotel(user_id=info.context.user.user_id,hotel_id=params.hotel_id, update_hotel_dto=update_hotel_dto)
         except InvalidAdminUser:
-            return UserNotAuthorized(user_id=info.context.user.id)
+            return UserNotAuthorized(user_id=info.context.user.user_id)
 
 
-        return UpdateHotelResponse(
-            Hotel(
-                hotel_id = hotel_dto.id,
+        return Hotel(
+                id = hotel_dto.id,
                 name = hotel_dto.name,
                 description = hotel_dto.description,
-                total_amount = hotel_dto.total_amount,
                 image_urls = hotel_dto.image_urls,
                 tariff = hotel_dto.tariff
             )
-        )

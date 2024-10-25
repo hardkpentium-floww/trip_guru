@@ -19,7 +19,7 @@ class Destinations(graphene.ObjectType):
 class AddDestinationParams(graphene.InputObjectType):
     name = graphene.String()
     description = graphene.String()
-    tags = graphene.List(graphene.String)
+    tags = graphene.String()
 
 
 
@@ -32,7 +32,7 @@ class UpdateDestinationParams(graphene.InputObjectType):
     name = graphene.String()
     description = graphene.String()
     user_id = graphene.String()
-    tags = graphene.List(graphene.String)
+    tags = graphene.String()
 
 class UpdateDestinationResponse(graphene.Union):
     class Meta:
@@ -54,3 +54,5 @@ class GetDestinationResponse(graphene.Union):
 class GetDestinationsResponse(graphene.Union):
     class Meta:
         types = (Destinations,DestinationNotFound)
+
+
