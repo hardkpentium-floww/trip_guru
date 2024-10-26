@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import List
-from oauth2_provider.models import Application
 from abc import abstractmethod
 from datetime import datetime
 
@@ -131,6 +130,26 @@ class AuthenticationTokensDTO:
     scope: str
     token_type: str
 
+@dataclass()
+class DestinationDTO:
+    id: int
+    name: str
+    description: str
+    tags: str
+    user_id: str
+
+
+@dataclass()
+class BookHotelDTO:
+    user_id: str
+    hotel_id: int
+    checkin_date: str
+    checkout_date: str
+    total_amount: int
+    tariff : int
+    destination_id: int
+
+
 
 class StorageInterface:
     @abstractmethod
@@ -164,7 +183,11 @@ class StorageInterface:
         pass
 
     @abstractmethod
-    def get_application_instance(self, application_name: str) -> Application:
+    def get_application_instance(self, application_name: str):
+        pass
+
+    @abstractmethod
+    def get_user_account(self, user_id: str):
         pass
 
     @abstractmethod
@@ -243,15 +266,8 @@ class StorageInterface:
 #     tags: List[str]
 #
 #
-# @dataclass()
-# class BookHotelDTO:
-#     user_id: str
-#     hotel_id: int
-#     checkin_date: str
-#     checkout_date: str
-#     total_amount: int
-#     payment_method: str
-#
+
+
 # @dataclass()
 # class GetDestinationDTO:
 #     destination_name: str

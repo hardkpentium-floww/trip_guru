@@ -1,15 +1,15 @@
-from ib_users.models import UserAccount
-from oauth2_provider.models import Application
-from oauth2_provider.models import AccessToken, RefreshToken
-from trip.exceptions.custom_exceptions import InvalidBooking, InvalidAdminUser, InvalidDestination, \
+
+from typing import List
+
+from django.db.models import Q
+
+from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidDestination, \
     BookingScheduleOverlap, NoBookingsExists
+from trip.exceptions.custom_exceptions import InvalidUser
 from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, GetDestinationsDTO, HotelDTO, \
     RatingDTO, BookingDTO, StorageInterface, UpdateBookingDTO, MutateDestinationDTO, MutateHotelDTO, MutateRatingDTO, \
-    MutateBookingDTO, SearchDestinationDTO, AccessTokenDTO, RefreshTokenDTO
-from typing import List
-from django.db.models import Q
-from trip.models import Destination, Hotel, Rating, Booking,User
-from trip.exceptions.custom_exceptions import InvalidUser
+    MutateBookingDTO, AccessTokenDTO, RefreshTokenDTO
+from trip.models import Destination, Hotel, Rating, Booking, User
 
 
 class StorageImplementation(StorageInterface):
@@ -31,26 +31,6 @@ class StorageImplementation(StorageInterface):
 
         return destination_dto
 
-    def search_destination(self, search_destination_dto: SearchDestinationDTO)-> List[DestinationDTO]:
-
-        query = Q()
-        if search_destination_dto.name:
-            query |= Q(name__contains=search_destination_dto.name)
-
-        if search_destination_dto.tag:
-            query |= Q(tags__contains=search_destination_dto.tag)
-
-        destination_objs = Destination.objects.filter(query).all()
-
-        return [
-            DestinationDTO(
-                id=destinationObj.id,
-                name=destinationObj.name,
-                description=destinationObj.description,
-                tags=destinationObj.tags,
-                user_id = destinationObj.user_id
-            ) for destinationObj in destination_objs]
-
     def validate_admin_user(self, user_id: str):
         check = user_id == 'e9ab68e1-95c2-41bc-966d-615a9cfd175d'
         if check:
@@ -67,6 +47,8 @@ class StorageImplementation(StorageInterface):
             raise InvalidUser
 
     def logout(self, user_id: int):
+        from oauth2_provider.models import Application
+        from oauth2_provider.models import AccessToken, RefreshToken
 
         application = Application.objects.get(name='trip-guru')
         access_token = AccessToken.objects.get(user_id=user_id, application=application)
@@ -74,14 +56,15 @@ class StorageImplementation(StorageInterface):
         refresh_token.delete()
         access_token.delete()
 
-        return
 
-    def get_user_account(self, user_id: str) -> UserAccount:
+    def get_user_account(self, user_id: str):
+        from ib_users.models import UserAccount
         user = UserAccount.objects.get(user_id=user_id)
         return user
 
     def create_access_token(self,
                             access_token_dto: AccessTokenDTO):
+        from oauth2_provider.models import AccessToken
 
         token = access_token_dto.token
         user_id = access_token_dto.user_id
@@ -104,12 +87,13 @@ class StorageImplementation(StorageInterface):
 
     def create_refresh_token(self,
             refresh_token_dto: RefreshTokenDTO):
+        from oauth2_provider.models import RefreshToken
         token = refresh_token_dto.token
         user_id = refresh_token_dto.user_id
         application_name = refresh_token_dto.application_name
         access_token_id = refresh_token_dto.access_token_id
 
-        application_id = self.get_application_instance(application_name=application_name).id
+        application_id = self.get_application_id(application_name=application_name)
         refresh_token = RefreshToken.objects.create(
             user_id=user_id,
             token=token,
@@ -120,7 +104,14 @@ class StorageImplementation(StorageInterface):
 
         return refresh_token
 
-    def get_application_instance(self, application_name:str) -> Application:
+    def get_application_id(self, application_name:str):
+        from oauth2_provider.models import Application
+        application_id = Application.objects.filter(name=application_name).values('id').first()
+        return application_id
+
+    def get_application_instance(self, application_name:str):
+        from oauth2_provider.models import Application
+
         application = Application.objects.filter(name=application_name).first()
         return application
 

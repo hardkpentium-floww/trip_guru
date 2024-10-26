@@ -78,3 +78,5 @@ API_KEY_AUTHENTICATION_CLASS = \
     "trip_guru.common.authentication.APIKeyAuthentication"
 
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
+
+OTP_LENGTH = os.environ.get("OTP_LENGTH", 6)
