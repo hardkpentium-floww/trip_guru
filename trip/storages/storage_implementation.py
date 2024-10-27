@@ -13,6 +13,7 @@ from trip.models import Destination, Hotel, Rating, Booking, User
 
 
 class StorageImplementation(StorageInterface):
+
     def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
         destination_obj = Destination.objects.create(
             name = add_destination_dto.name,
@@ -32,8 +33,8 @@ class StorageImplementation(StorageInterface):
         return destination_dto
 
     def validate_admin_user(self, user_id: str):
-        check = user_id == 'e9ab68e1-95c2-41bc-966d-615a9cfd175d'
-        if check:
+        check = (user_id == 'e9ab68e1-95c2-41bc-966d-615a9cfd175d')
+        if not check:
             raise InvalidAdminUser
 
     def validate_destination_id(self, destination_id: int):
@@ -42,7 +43,8 @@ class StorageImplementation(StorageInterface):
             raise InvalidDestination
 
     def validate_user_id(self, user_id:str):
-        user = User.objects.filter(id=user_id).exists()
+        from ib_users.models import UserAccount
+        user = UserAccount.objects.filter(user_id=user_id).exists()
         if not user:
             raise InvalidUser
 
@@ -50,8 +52,8 @@ class StorageImplementation(StorageInterface):
         from oauth2_provider.models import Application
         from oauth2_provider.models import AccessToken, RefreshToken
 
-        application = Application.objects.get(name='trip-guru')
-        access_token = AccessToken.objects.get(user_id=user_id, application=application)
+        application_id = Application.objects.filter(name='trip-guru').values('id')
+        access_token = AccessToken.objects.get(user_id=user_id)
         refresh_token = RefreshToken.objects.get(access_token=access_token)
         refresh_token.delete()
         access_token.delete()
@@ -154,10 +156,17 @@ class StorageImplementation(StorageInterface):
 
     def add_hotel(self, user_id:str, add_hotel_dto: MutateHotelDTO):
 
-        check = Destination.objects.filter(id=add_hotel_dto.destination_id).exists()
+        destination_check = Destination.objects.filter(id=add_hotel_dto.destination_id).values('user_id', 'id')
 
-        if not check:
+        if not destination_check.exists():
             raise InvalidDestination
+
+        user_check = (destination_check[0]["user_id"] == user_id)
+
+        if not user_check:
+            raise InvalidAdminUser
+
+
 
 
         hotel_obj = Hotel.objects.create(
@@ -266,7 +275,7 @@ class StorageImplementation(StorageInterface):
 
         return booking_dto
 
-    def update_booking(self, booking_id: int, update_booking_dto: UpdateBookingDTO)->BookingDTO:
+    def update_booking(self, booking_id: int, update_booking_dto: MutateBookingDTO)->BookingDTO:
         checkin_date = update_booking_dto.checkin_date
         checkout_date = update_booking_dto.checkout_date
 
@@ -280,7 +289,7 @@ class StorageImplementation(StorageInterface):
         if overlapping_bookings.exists():
             raise BookingScheduleOverlap
 
-        booking = Booking.objects.get(id=update_booking_dto.booking_id)
+        booking = Booking.objects.get(id=booking_id)
 
         if checkin_date:
             booking.checkin_date = checkin_date
@@ -360,8 +369,8 @@ class StorageImplementation(StorageInterface):
 
         return hotel_dto
 
-    def get_bookings_for_user(self, user_id: str, offset: int, limit: int) -> List[BookingDTO]:
-        check = User.objects.filter(id=user_id).exists()
+    def get_bookings_for_user(self, user_id: int, offset: int, limit: int) -> List[BookingDTO]:
+        check = Booking.objects.filter(user_id=user_id).exists()
         if not check:
             raise NoBookingsExists
 
@@ -380,8 +389,8 @@ class StorageImplementation(StorageInterface):
         ]
 
     def get_hotels(self, destination_id: int)->List[HotelDTO]:
-        check = Destination.objects.filter(id=destination_id).exists()
-        if not check:
+        destination_check = Destination.objects.filter(id=destination_id).exists()
+        if not destination_check:
             raise InvalidDestination
 
         hotel_objs = Hotel.objects.filter(

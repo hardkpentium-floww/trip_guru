@@ -130,14 +130,6 @@ class AuthenticationTokensDTO:
     scope: str
     token_type: str
 
-@dataclass()
-class DestinationDTO:
-    id: int
-    name: str
-    description: str
-    tags: str
-    user_id: str
-
 
 @dataclass()
 class BookHotelDTO:

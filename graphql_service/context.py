@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.contrib.auth import authenticate
 from django.utils.functional import SimpleLazyObject
-from ib_users.models import UserAccount
+
 from oauth2_provider.models import (
     get_access_token_model,
     get_application_model,

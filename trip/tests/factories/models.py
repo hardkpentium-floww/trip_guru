@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import factory
 from oauth2_provider.models import Application
 from ib_users.models import UserAccount
 from oauth2_provider.models import AccessToken, RefreshToken
 
-from trip.models import Destination, Hotel, Booking
+from trip.models import Destination, Hotel, Booking, User
 
 
 class ApplicationFactory(factory.django.DjangoModelFactory):
@@ -22,50 +22,60 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     skip_authorization = False
 
 
-class AccessTokenFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = AccessToken
+        model = User
 
-    id = factory.Faker('uuid4')
-    token = factory.Faker('uuid4')
-    expires = datetime.now()
-    scope = "read write"
-    application = factory.SubFactory(ApplicationFactory)
-    user = None
-    token_type = "bearer"
-
-
-class RefreshTokenFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = RefreshToken
-
-    id = factory.Faker('uuid4')
-    token = factory.Faker('uuid4')
-    application = factory.SubFactory(ApplicationFactory)
-    user = None
-    access_token = factory.SubFactory(AccessTokenFactory)
-
+    id = factory.Faker("uuid4")
+    name = factory.Faker('user_name')
+    phone_no = factory.Faker('phone_number')
 
 class UserAccountFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = UserAccount
 
-    user_id = factory.Faker('uuid4')
+    user_id = factory.Faker("uuid4")
     username = factory.Faker('user_name')
     phone_number = factory.Faker('phone_number')
     email = factory.Faker('email')
     is_password_reset = True
 
 
+
+class AccessTokenFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AccessToken
+
+    id = factory.Faker('random_int', min=1, max=10000)
+    token = factory.Faker('uuid4')
+    expires = datetime.now()
+    scope = "read write"
+    application = factory.SubFactory(ApplicationFactory)
+    user = None
+
+
+
+class RefreshTokenFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RefreshToken
+
+    id = factory.Faker('random_int', min=1, max=10000)
+    token = factory.Faker('uuid4')
+    application = factory.SubFactory(ApplicationFactory)
+    user = factory.SubFactory(UserAccountFactory)
+    access_token_id = factory.Faker('random_int', min=1, max=10000)
+
+
+
 class DestinationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Destination
 
-    id = factory.Faker('integer')
+    id = factory.Faker('random_int', min=1, max=10000)
     name = factory.Faker('name')
     description = factory.Faker('sentence')
-    tags = factory.Faker('sentence')
-    user = None
+    tags = "beach"
+    user = factory.SubFactory(UserFactory)
 
 
 
@@ -73,11 +83,10 @@ class HotelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Hotel
 
-    id = factory.Faker('integer')
+    id = factory.Faker('random_int', min=1, max=10000)
     name = factory.Faker('name')
     description = factory.Faker('sentence')
-    tariff = factory.Faker('integer')
-    user = None
+    tariff = factory.Faker('random_int', min=1, max=10000)
     destination = factory.SubFactory(DestinationFactory)
     image_urls = factory.Faker('sentence')
 
@@ -86,14 +95,14 @@ class BookingFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Booking
 
-    id = factory.Faker('integer')
+    id = factory.Faker('random_int', min=1, max=10000)
     hotel = factory.SubFactory(HotelFactory)
-    user = None
+    user = factory.SubFactory(UserFactory)
     destination = factory.SubFactory(DestinationFactory)
-    checkin_date = factory.Faker('date')
-    checkout_date = factory.Faker('date')
-    tariff = factory.Faker('integer')
-    total_amount = factory.Faker('integer')
+    checkin_date = factory.LazyFunction(lambda: datetime.now() + timedelta(days=1))
+    checkout_date = factory.LazyFunction(lambda: datetime.now() + timedelta(days=2))
+    tariff =  factory.Faker('random_int', min=1, max=10000)
+    total_amount = factory.Faker('random_int', min=1, max=10000)
 
 
 
