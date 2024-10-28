@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "host": "localhost:8000",
-    "basePath": "/api/",
+    "basePath": "/api/trip/",
     "info": {
         "version": "1.0.0",
         "title": "Simple API",
@@ -105,7 +105,7 @@
         }
     },
     "paths": {
-        "/login": {
+        "/login/": {
             "post": {
                 "operationId": "login",
                 "summary": "Login for Person",
@@ -168,7 +168,7 @@
                 }
             }
         },
-        "/logout": {
+        "/logout/": {
             "post": {
                 "operationId": "logout",
                 "summary": "Logout for a Person",

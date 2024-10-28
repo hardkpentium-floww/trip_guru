@@ -12,8 +12,8 @@ class UpdateHotelInteractor:
                     update_hotel_dto: MutateHotelDTO
                  ) :
 
-
-
+        self.storage.check_duplicate_hotels(add_hotel_dtos=[update_hotel_dto])
+        self.storage.validate_tariff(tariff=update_hotel_dto.tariff)
         self.storage.validate_admin_user(user_id=user_id)
 
 

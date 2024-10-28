@@ -22,3 +22,9 @@ class InvalidUser(Exception):
 
 class NoBookingsExists(Exception):
     pass
+
+class InvalidTariff(Exception):
+    pass
+
+class InvalidCheckinCheckoutDate(Exception):
+    pass

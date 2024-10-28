@@ -11,9 +11,8 @@ class UpdateDestinationInteractor:
                  update_destination_dto: MutateDestinationDTO
                  ) :
 
-
-
         self.storage.validate_admin_user(user_id=update_destination_dto.user_id)
+        self.storage.check_duplicate_destination(add_destination_dto=update_destination_dto)
 
 
         destination_dto = self.storage.update_destination(

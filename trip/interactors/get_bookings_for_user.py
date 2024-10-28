@@ -12,9 +12,7 @@ class GetBookingsForUserInteractor:
                  limit: int
                  ) :
 
-
-
-        # self.storage.validate_admin_user(user_id=add_hotel_dto.user_id)
+        self.storage.validate_admin_user(user_id=user_id)
 
 
         destination_dto = self.storage.get_bookings_for_user(

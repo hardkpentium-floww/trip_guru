@@ -1,20 +1,20 @@
-
+from datetime import datetime
 from typing import List
 
 from django.db.models import Q
 
 from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidDestination, \
-    BookingScheduleOverlap, NoBookingsExists
+    BookingScheduleOverlap, NoBookingsExists, InvalidHotel, InvalidCheckinCheckoutDate, InvalidRating, InvalidTariff
 from trip.exceptions.custom_exceptions import InvalidUser
 from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, GetDestinationsDTO, HotelDTO, \
-    RatingDTO, BookingDTO, StorageInterface, UpdateBookingDTO, MutateDestinationDTO, MutateHotelDTO, MutateRatingDTO, \
-    MutateBookingDTO, AccessTokenDTO, RefreshTokenDTO
+    RatingDTO, BookingDTO, StorageInterface, MutateDestinationDTO, MutateHotelDTO, \
+    MutateBookingDTO, AccessTokenDTO, RefreshTokenDTO, AddRatingDTO, AddDestinationDTO, AddHotelDTO, AddBookingDTO
 from trip.models import Destination, Hotel, Rating, Booking, User
 
 
 class StorageImplementation(StorageInterface):
 
-    def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
+    def add_destination(self, add_destination_dto: AddDestinationDTO)->DestinationDTO :
         destination_obj = Destination.objects.create(
             name = add_destination_dto.name,
             description = add_destination_dto.description,
@@ -27,26 +27,66 @@ class StorageImplementation(StorageInterface):
             name = destination_obj.name,
             description = destination_obj.description,
             tags = destination_obj.tags,
-            user_id = destination_obj.user_id
+            user_id = destination_obj.user_id,
         )
 
         return destination_dto
 
+    def add_hotels(self, user_id: str, add_hotel_dtos: List[AddHotelDTO], destination_id: int):
+
+        hotel_objs =[Hotel(
+            name = hotel_dto.name,
+            description = hotel_dto.description,
+            image_urls = hotel_dto.image_urls,
+            tariff = hotel_dto.tariff,
+            destination_id = destination_id
+        ) for hotel_dto in add_hotel_dtos]
+
+        Hotel.objects.bulk_create(hotel_objs)
+
+        hotel_dtos = [HotelDTO(
+            id = hotel_obj.id,
+            name = hotel_obj.name,
+            description=hotel_obj.description,
+            image_urls=hotel_obj.image_urls,
+            tariff=hotel_obj.tariff,
+            destination_id=destination_id
+        ) for hotel_obj in hotel_objs]
+
+        return hotel_dtos
+
+    def check_duplicate_destination(self, add_destination_dto):
+        check = Destination.objects.filter(name=add_destination_dto.name).exists()
+        return check
+
+    def check_duplicate_hotels(self, add_hotel_dtos: List[AddHotelDTO]):
+
+        names = [add_hotel_dto.name for add_hotel_dto in add_hotel_dtos]
+        names_set = set(names)
+
+        if len(names) != len(names_set):
+            raise InvalidHotel
+
+        check = Hotel.objects.filter(name__in=names).exists()
+
+        return check
+
+    def validate_checkin_checkout_date(self, checkin_date: datetime, checkout_date: datetime):
+        check = (checkin_date < checkout_date)
+        return check
+
     def validate_admin_user(self, user_id: str):
-        check = (user_id == 'e9ab68e1-95c2-41bc-966d-615a9cfd175d')
-        if not check:
-            raise InvalidAdminUser
+        check = (str(user_id) == "e9ab68e1-95c2-41bc-966d-615a9cfd175d")
+        return check
 
     def validate_destination_id(self, destination_id: int):
         check = Destination.objects.filter(id = destination_id).exists()
-        if not check:
-            raise InvalidDestination
+        return check
 
     def validate_user_id(self, user_id:str):
         from ib_users.models import UserAccount
-        user = UserAccount.objects.filter(user_id=user_id).exists()
-        if not user:
-            raise InvalidUser
+        check_user = UserAccount.objects.filter(user_id=user_id).exists()
+        return check_user
 
     def logout(self, user_id: int):
         from oauth2_provider.models import Application
@@ -118,8 +158,8 @@ class StorageImplementation(StorageInterface):
         return application
 
     def get_destination(self, destination_id: int)->DestinationDTO:
-        destinationObj = Destination.objects.filter(
-            id = destination_id).first()
+        destinationObj = Destination.objects.get(
+            id = destination_id)
         destination_dto = DestinationDTO(
             id = destinationObj.id,
             name=destinationObj.name,
@@ -154,7 +194,7 @@ class StorageImplementation(StorageInterface):
         if not check:
             raise InvalidUser
 
-    def add_hotel(self, user_id:str, add_hotel_dto: MutateHotelDTO):
+    def add_hotel(self, user_id:str, add_hotel_dto: AddHotelDTO):
 
         destination_check = Destination.objects.filter(id=add_hotel_dto.destination_id).values('user_id', 'id')
 
@@ -165,7 +205,6 @@ class StorageImplementation(StorageInterface):
 
         if not user_check:
             raise InvalidAdminUser
-
 
 
 
@@ -204,7 +243,7 @@ class StorageImplementation(StorageInterface):
 
         return hotel_dto
 
-    def add_rating(self, add_rating_dto: MutateRatingDTO):
+    def add_rating(self, add_rating_dto: AddRatingDTO):
 
         check = Destination.objects.filter(id=add_rating_dto.destination_id).exists()
 
@@ -228,18 +267,7 @@ class StorageImplementation(StorageInterface):
 
         return rating_dto
 
-    def book_hotel(self,hotel_id: int, book_hotel_dto: MutateBookingDTO):
-        checkin_date = book_hotel_dto.checkin_date
-        checkout_date = book_hotel_dto.checkout_date
-        user_id = book_hotel_dto.user_id
-
-        # checks in gql
-        check = Destination.objects.filter(id=book_hotel_dto.destination_id).exists()
-
-        if not check:
-            raise InvalidDestination
-
-
+    def check_overlapping_bookings(self, user_id: str, checkin_date:datetime, checkout_date:datetime):
 
         overlapping_bookings = Booking.objects.filter(
             Q(user_id=user_id) & (
@@ -252,6 +280,11 @@ class StorageImplementation(StorageInterface):
             raise BookingScheduleOverlap
 
 
+
+    def book_hotel(self,hotel_id: int, book_hotel_dto: AddBookingDTO):
+        checkin_date = book_hotel_dto.checkin_date
+        checkout_date = book_hotel_dto.checkout_date
+        user_id = book_hotel_dto.user_id
 
         booking_obj = Booking.objects.create(
             user_id = book_hotel_dto.user_id,
@@ -278,17 +311,6 @@ class StorageImplementation(StorageInterface):
     def update_booking(self, booking_id: int, update_booking_dto: MutateBookingDTO)->BookingDTO:
         checkin_date = update_booking_dto.checkin_date
         checkout_date = update_booking_dto.checkout_date
-
-        overlapping_bookings = Booking.objects.filter(
-            Q(id=booking_id) & (
-                    Q(checkin_date__lt=checkout_date) &
-                    Q(checkout_date__gt=checkin_date)
-            )
-        )
-
-        if overlapping_bookings.exists():
-            raise BookingScheduleOverlap
-
         booking = Booking.objects.get(id=booking_id)
 
         if checkin_date:
@@ -388,13 +410,13 @@ class StorageImplementation(StorageInterface):
             ) for booking_obj in booking_objs
         ]
 
-    def get_hotels(self, destination_id: int)->List[HotelDTO]:
-        destination_check = Destination.objects.filter(id=destination_id).exists()
+    def get_hotels(self, destination_ids: List[int])->List[HotelDTO]:
+        destination_check = Destination.objects.filter(id__in=destination_ids).exists()
         if not destination_check:
             raise InvalidDestination
 
         hotel_objs = Hotel.objects.filter(
-            destination_id = destination_id
+            destination_id__in = destination_ids
         ).all()
 
         return [

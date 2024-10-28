@@ -1,4 +1,4 @@
-from trip.interactors.storage_interfaces.storage_interface import StorageInterface, UpdateBookingDTO, MutateBookingDTO
+from trip.interactors.storage_interfaces.storage_interface import StorageInterface, MutateBookingDTO
 
 
 class UpdateBookingInteractor:
@@ -10,10 +10,10 @@ class UpdateBookingInteractor:
                  update_booking_dto: MutateBookingDTO
                  ) :
 
-
-
-        # self.storage.validate_admin_user(user_id=update_destination_dto.user_id)
-
+        self.storage.check_overlapping_bookings(
+            user_id=update_booking_dto.user_id,
+            checkin_date=update_booking_dto.checkin_date,
+            checkout_date=update_booking_dto.checkout_date)
 
         booking_dto = self.storage.update_booking(
             booking_id= update_booking_dto.booking_id,

@@ -16,7 +16,8 @@ class TestCase01LoginAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-        body = {'phone_no': 'string'}
+
+        body = {'phone_no': '9310533725'}
         path_params = {}
         query_params = {}
         headers = {}

@@ -2,7 +2,7 @@ import graphene
 
 from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidDestination
 from trip.interactors.add_hotel_interactor import AddHotelInteractor
-from trip.interactors.storage_interfaces.storage_interface import MutateHotelDTO
+from trip.interactors.storage_interfaces.storage_interface import MutateHotelDTO, AddHotelDTO
 from trip.storages.storage_implementation import StorageImplementation
 from trip_gql.destination.types.types import DestinationNotFound
 from trip_gql.hotel.types.types import Hotel, AddHotelResponse, AddHotelParams, UserNotAuthorized
@@ -19,7 +19,7 @@ class AddHotel(graphene.Mutation):
         storage = StorageImplementation()
         interactor = AddHotelInteractor(storage=storage)
 
-        add_hotel_dto = MutateHotelDTO(
+        add_hotel_dto = AddHotelDTO(
             name = params.name,
             description = params.description,
             tariff=params.tariff,

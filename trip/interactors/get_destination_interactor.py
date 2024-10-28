@@ -10,11 +10,6 @@ class GetDestinationInteractor:
                  destination_id: int
                  ) :
 
-
-
-        # self.storage.validate_admin_user(user_id=add_hotel_dto.user_id)
-
-
         destination_dto = self.storage.get_destination(
             destination_id= destination_id
         )

@@ -24,7 +24,7 @@ class UpdateDestination(graphene.Mutation):
             name = params.name,
             description = params.description,
             tags = params.tags,
-            destination_id=params.destination_id,
+            id=params.destination_id,
             user_id=info.context.user.user_id
         )
         try:

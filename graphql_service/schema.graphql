@@ -11,6 +11,8 @@ union AddRatingResponse = Rating | DestinationNotFound | UserNotAuthorized
 
 union BookHotelResponse = Booking | BookingNotPossible
 
+union GetBookingsForUserResponse = Bookings | BookingsNotFound
+
 union GetDestinationResponse = Destination | DestinationNotFound
 
 union GetDestinationsResponse = Destinations | DestinationNotFound
@@ -41,12 +43,21 @@ type BookingNotPossible {
   hotelId: Int
 }
 
+type Bookings {
+  bookings: [Booking]
+}
+
+type BookingsNotFound {
+  userId: String
+}
+
 type Destination {
   id: Int
   name: String
   description: String
   userId: String
   tags: String
+  hotels: [Hotel]
 }
 
 type DestinationNotFound {
@@ -94,6 +105,7 @@ input AddDestinationParams {
   name: String
   description: String
   tags: String
+  hotels: [HotelInput]
 }
 
 input AddHotelParams {
@@ -120,6 +132,12 @@ input BookHotelParams {
   tariff: Int
 }
 
+input GetBookingsForUserParams {
+  userId: String
+  offset: Int
+  limit: Int
+}
+
 input GetDestinationParams {
   destinationId: Int
 }
@@ -136,6 +154,14 @@ input GetHotelParams {
 
 input GetHotelsParams {
   destinationId: Int!
+}
+
+input HotelInput {
+  name: String
+  description: String
+  tariff: Int
+  imageUrls: String
+  destinationId: Int
 }
 
 input UpdateBookingParams {
@@ -168,6 +194,7 @@ type Query {
   getHotelsForDestination(params: GetHotelsParams!): GetHotelsResponse
   getDestination(params: GetDestinationParams!): GetDestinationResponse
   getDestinations(params: GetDestinationsParams!): GetDestinationsResponse
+  getBookingsForUser(params: GetBookingsForUserParams!): GetBookingsForUserResponse
 }
 
 type Mutation {

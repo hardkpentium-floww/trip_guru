@@ -33,7 +33,7 @@ class AddDestinationDTOFactory(factory.Factory):
 
     name = factory.Faker('name')
     description = factory.Faker('sentence')
-    destination_id = factory.Faker('random_int', min=1, max=10000)
+    id = factory.Faker('random_int', min=1, max=10000)
     user_id = factory.Faker('uuid4')
     tags = factory.Faker('sentence')
 
@@ -55,6 +55,16 @@ class DestinationDTOFactory(factory.Factory):
     tags = factory.Faker('sentence')
     user_id = factory.Faker('uuid4')
 
+class BookingDTOFactory(factory.Factory):
+    class Meta:
+        model = BookingDTO
+    booking_id = factory.Faker('random_int', min=1, max=10000)
+    hotel_id= factory.Faker('random_int', min=1, max=10000)
+    user_id= factory.Faker('uuid4')
+    destination_id= factory.Faker('random_int', min=1, max=10000)
+    checkin_date = factory.Faker('date_time')
+    checkout_date = factory.Faker('date_time')
+    total_amount= factory.Faker('random_int', min=1, max=10000)
 
 class HotelDTOFactory(factory.Factory):
     class Meta:
@@ -69,7 +79,7 @@ class HotelDTOFactory(factory.Factory):
 
 class AddRatingDTOFactory(factory.Factory):
     class Meta:
-        model = MutateRatingDTO
+        model = AddRatingDTO
 
     user_id = factory.Faker('uuid4')
     destination_id = factory.Faker('random_int', min=1, max=10000)
@@ -78,15 +88,15 @@ class AddRatingDTOFactory(factory.Factory):
 
 class BookHotelDTOFactory(factory.Factory):
     class Meta:
-        model = BookHotelDTO
+        model = BookingDTO
 
+    booking_id = factory.Faker('random_int',min=1, max=10000)
     hotel_id = factory.Faker('random_int',min=1, max=10000)
     user_id = factory.Faker('uuid4')
     checkin_date = factory.Faker('date_time')
     checkout_date = factory.Faker('date_time')
     destination_id= factory.Faker('random_int',min=1, max=10000)
     total_amount = factory.Faker('random_int',min=1, max=10000)
-    tariff = factory.Faker('random_int',min=1, max=10000)
 
 class UpdateBookingDTOFactory(factory.Factory):
     class Meta:
@@ -104,7 +114,7 @@ class UpdateDestinationDTOFactory(factory.Factory):
     name = factory.Faker('name')
     description = factory.Faker('sentence')
     tags = factory.Faker('sentence')
-    destination_id = factory.Faker('random_int', min=1, max=10000)
+    id = factory.Faker('random_int', min=1, max=10000)
     user_id = factory.Faker('uuid4')
 
 class UpdateHotelDTOFactory(factory.Factory):

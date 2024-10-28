@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from abc import abstractmethod
 from datetime import datetime
 
@@ -13,12 +13,20 @@ class DestinationDTO:
     user_id: str
 
 @dataclass()
+class AddDestinationDTO:
+    name: str
+    description: str
+    tags: str
+    user_id: str
+
+
+@dataclass()
 class MutateDestinationDTO:
-    destination_id: int = None
-    name: str = None
-    description: str = None
-    tags: str= None
-    user_id: str= None
+    id:  Optional[int]
+    name: Optional[str]
+    description: Optional[str]
+    tags: Optional[str]
+    user_id: Optional[str]
 
 @dataclass()
 class HotelDTO:
@@ -30,13 +38,22 @@ class HotelDTO:
     destination_id: int
 
 @dataclass()
+class AddHotelDTO:
+    name: str
+    description: str
+    tariff: int
+    image_urls: str
+    destination_id: int
+
+@dataclass()
 class MutateHotelDTO:
-    hotel_id: int = None
-    name: str= None
-    description: str= None
-    tariff: int= None
-    image_urls: str= None
-    destination_id: int= None
+    hotel_id: int
+    name:  Optional[str]
+    description:  Optional[str]
+    tariff:  Optional[int]
+    image_urls:  Optional[str]
+    destination_id: Optional[int]
+
 
 
 @dataclass()
@@ -47,13 +64,12 @@ class RatingDTO:
     review: str
     destination_id: int
 
-
 @dataclass()
-class MutateRatingDTO:
-    rating: int= None
-    user_id: str= None
-    review: str= None
-    destination_id: int= None
+class AddRatingDTO:
+    rating: int
+    user_id: str
+    review: str
+    destination_id: int
 
 
 @dataclass()
@@ -69,19 +85,43 @@ class BookingDTO:
     hotel_id: int
     user_id: str
     destination_id: int
-    checkin_date: str
-    checkout_date: str
+    checkin_date: datetime
+    checkout_date: datetime
     total_amount: int
+
+#
+# @dataclass()
+# class BookHotelDTO:
+#     user_id: str
+#     hotel_id: int
+#     checkin_date: str
+#     checkout_date: str
+#     total_amount: int
+#     tariff : int
+#     destination_id: int
+
+
+@dataclass()
+class AddBookingDTO:
+    hotel_id: int
+    user_id: str
+    destination_id: int
+    checkin_date: datetime
+    checkout_date: datetime
+    total_amount: int
+    tariff: int
 
 @dataclass()
 class MutateBookingDTO:
-    booking_id: int = None
+    booking_id: int
+    user_id: str
     hotel_id: int= None
-    user_id: str= None
     destination_id: int= None
-    checkin_date: str= None
-    checkout_date: str= None
+    checkin_date: datetime= None
+    checkout_date: datetime= None
+    tariff: int= None
     total_amount: int= None
+
 
 @dataclass()
 class GetDestinationsDTO:
@@ -89,20 +129,6 @@ class GetDestinationsDTO:
   limit : int
   tag : str
 
-
-@dataclass()
-class SearchDestinationDTO:
-    name: str
-    offset : int
-    limit : int
-    tag:str
-
-@dataclass()
-class UpdateBookingDTO:
-    booking_id: int
-    user_id: str
-    checkin_date: str= None
-    checkout_date: str= None
 
 
 @dataclass()
@@ -131,30 +157,22 @@ class AuthenticationTokensDTO:
     token_type: str
 
 
-@dataclass()
-class BookHotelDTO:
-    user_id: str
-    hotel_id: int
-    checkin_date: str
-    checkout_date: str
-    total_amount: int
-    tariff : int
-    destination_id: int
-
 
 
 class StorageInterface:
     @abstractmethod
-    def add_destination(self, add_destination_dto: MutateDestinationDTO)->DestinationDTO :
+    def add_destination(self, add_destination_dto: AddDestinationDTO)->DestinationDTO :
+        pass
+
+
+    @abstractmethod
+    def add_hotels(self, user_id: str, add_hotel_dtos: List[AddHotelDTO],destination_id: int):
         pass
 
     @abstractmethod
     def validate_destination_id(self, destination_id: int):
         pass
 
-    @abstractmethod
-    def search_destination(self, search_destination_dto: SearchDestinationDTO)-> List[DestinationDTO]:
-        pass
 
     @abstractmethod
     def create_refresh_token(self,
@@ -187,6 +205,18 @@ class StorageInterface:
         pass
 
     @abstractmethod
+    def check_duplicate_destination(self, add_destination_dto):
+        pass
+
+    @abstractmethod
+    def check_duplicate_hotels(self, add_hotel_dtos: List[AddHotelDTO]):
+        pass
+
+    @abstractmethod
+    def validate_checkin_checkout_date(self, checkin_date: datetime, checkout_date: datetime):
+        pass
+
+    @abstractmethod
     def validate_hotel_customer(self,destination_id: int, user_id: str):
         pass
 
@@ -199,7 +229,7 @@ class StorageInterface:
         pass
 
     @abstractmethod
-    def add_hotel(self,user_id: str, add_hotel_dto: MutateHotelDTO):
+    def add_hotel(self,user_id: str, add_hotel_dto: AddHotelDTO):
         pass
 
     @abstractmethod
@@ -207,11 +237,15 @@ class StorageInterface:
         pass
 
     @abstractmethod
-    def add_rating(self, add_rating_dto: MutateRatingDTO):
+    def add_rating(self, add_rating_dto: AddRatingDTO):
         pass
 
     @abstractmethod
-    def book_hotel(self,hotel_id: int, book_hotel_dto: MutateBookingDTO):
+    def book_hotel(self,hotel_id: int, book_hotel_dto: AddBookingDTO):
+        pass
+
+    @abstractmethod
+    def check_overlapping_bookings(self, user_id: str, checkin_date:datetime, checkout_date:datetime):
         pass
 
     @abstractmethod
@@ -227,41 +261,9 @@ class StorageInterface:
         pass
 
     @abstractmethod
-    def get_hotels(self, destination_id: int) -> List[HotelDTO]:
+    def get_hotels(self, destination_ids: List[int]) -> List[HotelDTO]:
         pass
 
     @abstractmethod
-
     def get_bookings_for_user(self, user_id: str, offset: int, limit: int) -> List[BookingDTO]:
         pass
-
-    # def get_user(self, user_id: str):
-    #     pass
-
-# @dataclass()
-# class UpdateDestinationDTO:
-#     destination_id: int
-#     name: str
-#     description: str
-#     image_urls: List[str]
-#     user_id: str
-#     tags: List[str]
-#
-#
-# @dataclass()
-# class UpdateHotelDTO:
-#     hotel_id: int
-#     name: str
-#     description: str
-#     image_urls: List[str]
-#     user_id: str
-#     tags: List[str]
-#
-#
-
-
-# @dataclass()
-# class GetDestinationDTO:
-#     destination_name: str
-
-
