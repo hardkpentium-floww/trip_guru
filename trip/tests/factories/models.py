@@ -48,10 +48,10 @@ class AccessTokenFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker('random_int', min=1, max=10000)
     token = factory.Faker('uuid4')
-    expires = datetime.now()
+    expires = datetime.now() + timedelta(days=1)
     scope = "read write"
     application = factory.SubFactory(ApplicationFactory)
-    user = None
+    user =  factory.SubFactory(UserAccountFactory)
 
 
 
@@ -63,7 +63,7 @@ class RefreshTokenFactory(factory.django.DjangoModelFactory):
     token = factory.Faker('uuid4')
     application = factory.SubFactory(ApplicationFactory)
     user = factory.SubFactory(UserAccountFactory)
-    access_token_id = factory.Faker('random_int', min=1, max=10000)
+    access_token = factory.SubFactory(AccessTokenFactory)
 
 
 

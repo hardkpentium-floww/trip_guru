@@ -25,12 +25,12 @@ class UpdateDestination(graphene.Mutation):
             description = params.description,
             tags = params.tags,
             id=params.destination_id,
-            user_id=info.context.user.user_id
+            user_id=info.context.user_id
         )
         try:
             destination_dto = interactor.update_destination(destination_id=params.destination_id, update_destination_dto=update_destination_dto)
         except InvalidAdminUser:
-            return UserNotAdmin(user_id= info.context.user.user_id)
+            return UserNotAdmin(user_id= info.context.user_id)
         except InvalidDestination:
             return DestinationNotFound(destination_id=params.destination_id)
 

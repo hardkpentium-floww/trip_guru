@@ -11,9 +11,11 @@ class LogoutInteractor:
 
 
     def logout(self,
-                 user_id: int,
+                 user_id: str,
+                 access_token: str
                  ) :
 
         self.storage.logout(
-            user_id= user_id
+            user_id= user_id,
+            access_token= access_token
         )

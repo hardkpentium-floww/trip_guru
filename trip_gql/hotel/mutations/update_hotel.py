@@ -1,11 +1,12 @@
 import graphene
 
-from trip.exceptions.custom_exceptions import InvalidAdminUser
+from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidTariff, InvalidHotel, InvalidDestination
 from trip.interactors.storage_interfaces.storage_interface import MutateHotelDTO
 from trip.interactors.update_hotel_interactor import UpdateHotelInteractor
 from trip.storages.storage_implementation import StorageImplementation
-from trip_gql.common_errors import UserNotAuthorized
-from trip_gql.hotel.types.types import Hotel, AddHotelResponse, AddHotelParams, UpdateHotelParams, UpdateHotelResponse
+from trip_gql.common_errors import UserNotAuthorized, DestinationNotFound
+from trip_gql.hotel.types.types import Hotel, UpdateHotelParams, UpdateHotelResponse, \
+    TariffNotValid, HotelWithNameAlreadyExists
 
 
 class UpdateHotel(graphene.Mutation):
@@ -29,10 +30,15 @@ class UpdateHotel(graphene.Mutation):
         )
 
         try:
-            hotel_dto = interactor.update_hotel(user_id=info.context.user.user_id,hotel_id=params.hotel_id, update_hotel_dto=update_hotel_dto)
+            hotel_dto = interactor.update_hotel(user_id=info.context.user_id,hotel_id=params.hotel_id, update_hotel_dto=update_hotel_dto)
         except InvalidAdminUser:
-            return UserNotAuthorized(user_id=info.context.user.user_id)
-
+            return UserNotAuthorized(user_id=info.context.user_id)
+        except InvalidTariff:
+            return TariffNotValid(tariff=params.tariff)
+        except InvalidHotel:
+            return HotelWithNameAlreadyExists(hotel_name=params.name)
+        except InvalidDestination:
+            return DestinationNotFound(destination_id=params.destination_id)
 
         return Hotel(
                 id = hotel_dto.id,

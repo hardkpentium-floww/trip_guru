@@ -3,7 +3,9 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX, URL_BASE_PATH
+from ...factories.models import RefreshTokenFactory, AccessTokenFactory, ApplicationFactory
 
 
 class TestCase01LogoutAPITestCase(TestUtils):
@@ -15,7 +17,7 @@ class TestCase01LogoutAPITestCase(TestUtils):
     SECURITY = {'oauth': {'scopes': ['read']}}
 
     @pytest.mark.django_db
-    def test_case(self, snapshot):
+    def test_case(self, snapshot, api_user):
         body = {}
         path_params = {}
         query_params = {}

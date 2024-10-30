@@ -3,7 +3,9 @@
 """
 import pytest
 from django_swagger_utils.utils.test_utils import TestUtils
+
 from . import APP_NAME, OPERATION_NAME, REQUEST_METHOD, URL_SUFFIX, URL_BASE_PATH
+from ...factories.models import UserFactory, UserAccountFactory, ApplicationFactory
 
 
 class TestCase01LoginAPITestCase(TestUtils):
@@ -16,8 +18,10 @@ class TestCase01LoginAPITestCase(TestUtils):
 
     @pytest.mark.django_db
     def test_case(self, snapshot):
-
+        user = UserFactory(phone_no="9310533725")
+        user_account = UserAccountFactory(user_id=user.id)
         body = {'phone_no': '9310533725'}
+        application = ApplicationFactory(name = 'trip-guru')
         path_params = {}
         query_params = {}
         headers = {}

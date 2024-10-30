@@ -12,12 +12,14 @@ class Rating(graphene.ObjectType):
 
 
 class AddRatingParams(graphene.InputObjectType):
-    user_id = graphene.String()
     destination_id = graphene.Int()
     rating = graphene.Float()
     review = graphene.String()
 
+class RatingNotValid(graphene.ObjectType):
+    rating = graphene.Float()
+
 class AddRatingResponse(graphene.Union):
     class Meta:
-        types = (Rating,DestinationNotFound,UserNotAuthorized)
+        types = (Rating,DestinationNotFound,UserNotAuthorized, RatingNotValid)
 

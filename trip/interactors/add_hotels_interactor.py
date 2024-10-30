@@ -1,3 +1,4 @@
+from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidDestination, InvalidHotel
 from trip.interactors.storage_interfaces.storage_interface import HotelDTO, StorageInterface, MutateHotelDTO, \
     AddHotelDTO
 from typing import List
@@ -15,9 +16,17 @@ class AddHotelsInteractor:
 
 
 
-        self.storage.validate_admin_user(user_id=user_id)
-        self.storage.validate_destination_id(destination_id=destination_id)
-        self.storage.check_duplicate_hotels(add_hotel_dtos=add_hotel_dtos)
+        check = self.storage.validate_admin_user(user_id=user_id)
+        if not check:
+            raise InvalidAdminUser
+
+        check = self.storage.validate_destination_id(destination_id=destination_id)
+        if not check:
+            raise InvalidDestination
+
+        check = self.storage.check_duplicate_hotels(add_hotel_dtos=add_hotel_dtos)
+        if check:
+            raise InvalidHotel
 
         hotel_dtos = self.storage.add_hotels(
             user_id=user_id,

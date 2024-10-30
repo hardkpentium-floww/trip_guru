@@ -9,7 +9,7 @@ from trip.exceptions.custom_exceptions import InvalidUser
 from trip.interactors.storage_interfaces.storage_interface import DestinationDTO, GetDestinationsDTO, HotelDTO, \
     RatingDTO, BookingDTO, StorageInterface, MutateDestinationDTO, MutateHotelDTO, \
     MutateBookingDTO, AccessTokenDTO, RefreshTokenDTO, AddRatingDTO, AddDestinationDTO, AddHotelDTO, AddBookingDTO
-from trip.models import Destination, Hotel, Rating, Booking, User
+from trip.models import Destination, Hotel, Rating, Booking
 
 
 class StorageImplementation(StorageInterface):
@@ -76,7 +76,7 @@ class StorageImplementation(StorageInterface):
         return check
 
     def validate_admin_user(self, user_id: str):
-        check = (str(user_id) == "e9ab68e1-95c2-41bc-966d-615a9cfd175d")
+        check = (str(user_id) == "test_user")
         return check
 
     def validate_destination_id(self, destination_id: int):
@@ -88,21 +88,23 @@ class StorageImplementation(StorageInterface):
         check_user = UserAccount.objects.filter(user_id=user_id).exists()
         return check_user
 
-    def logout(self, user_id: int):
-        from oauth2_provider.models import Application
-        from oauth2_provider.models import AccessToken, RefreshToken
+    def logout(self, user_id: str, access_token:str):
+        from oauth2_provider.models import AccessToken
 
-        application_id = Application.objects.filter(name='trip-guru').values('id')
-        access_token = AccessToken.objects.get(user_id=user_id)
-        refresh_token = RefreshToken.objects.get(access_token=access_token)
-        refresh_token.delete()
-        access_token.delete()
+        access_tokens = AccessToken.objects.filter(token=access_token, user_id=user_id)
+
+        for access_token in access_tokens:
+            access_token.expires = datetime.now()
+            access_token.save()
 
 
     def get_user_account(self, user_id: str):
         from ib_users.models import UserAccount
-        user = UserAccount.objects.get(user_id=user_id)
-        return user
+        user = UserAccount.objects.filter(user_id=user_id)
+        if user.exists():
+            return user[0]
+
+
 
     def create_access_token(self,
                             access_token_dto: AccessTokenDTO):
@@ -114,11 +116,10 @@ class StorageImplementation(StorageInterface):
         expires = access_token_dto.expires
         source_refresh_token = access_token_dto.source_refresh_token
 
-        user = self.get_user_account(user_id=user_id)
         application = self.get_application_instance(application_name=application_name)
 
         access_token = AccessToken.objects.create(
-            user=user,
+            user_id=user_id,
             token=token,
             application=application,
             expires=expires,
@@ -129,13 +130,13 @@ class StorageImplementation(StorageInterface):
 
     def create_refresh_token(self,
             refresh_token_dto: RefreshTokenDTO):
-        from oauth2_provider.models import RefreshToken
+        from oauth2_provider.models import RefreshToken,AccessToken
         token = refresh_token_dto.token
         user_id = refresh_token_dto.user_id
         application_name = refresh_token_dto.application_name
         access_token_id = refresh_token_dto.access_token_id
-
         application_id = self.get_application_id(application_name=application_name)
+
         refresh_token = RefreshToken.objects.create(
             user_id=user_id,
             token=token,
@@ -148,8 +149,8 @@ class StorageImplementation(StorageInterface):
 
     def get_application_id(self, application_name:str):
         from oauth2_provider.models import Application
-        application_id = Application.objects.filter(name=application_name).values('id').first()
-        return application_id
+        application = Application.objects.filter(name=application_name).values('id').first()
+        return application['id']
 
     def get_application_instance(self, application_name:str):
         from oauth2_provider.models import Application
@@ -191,22 +192,9 @@ class StorageImplementation(StorageInterface):
     def validate_hotel_customer(self,destination_id: int, user_id: str):
         check = Destination.objects.filter(id = destination_id, user_id = user_id).exists()
 
-        if not check:
-            raise InvalidUser
+        return check
 
     def add_hotel(self, user_id:str, add_hotel_dto: AddHotelDTO):
-
-        destination_check = Destination.objects.filter(id=add_hotel_dto.destination_id).values('user_id', 'id')
-
-        if not destination_check.exists():
-            raise InvalidDestination
-
-        user_check = (destination_check[0]["user_id"] == user_id)
-
-        if not user_check:
-            raise InvalidAdminUser
-
-
 
         hotel_obj = Hotel.objects.create(
             name = add_hotel_dto.name,
@@ -228,10 +216,17 @@ class StorageImplementation(StorageInterface):
 
         return hotel_dto
 
+    def validate_hotel_id(self, hotel_id: int):
+        check = Hotel.objects.filter(id = hotel_id).exists()
+        return check
+
     def get_hotel(self, hotel_id: int)->HotelDTO:
+
         hotel_obj = Hotel.objects.filter(
             id = hotel_id
         ).first()
+
+
         hotel_dto = HotelDTO(
             id = hotel_obj.id,
             name = hotel_obj.name,
@@ -244,11 +239,6 @@ class StorageImplementation(StorageInterface):
         return hotel_dto
 
     def add_rating(self, add_rating_dto: AddRatingDTO):
-
-        check = Destination.objects.filter(id=add_rating_dto.destination_id).exists()
-
-        if not check:
-            raise InvalidDestination
 
         rating_obj = Rating.objects.create(
             rating = add_rating_dto.rating,
@@ -276,8 +266,8 @@ class StorageImplementation(StorageInterface):
             )
         )
 
-        if overlapping_bookings.exists():
-            raise BookingScheduleOverlap
+        return overlapping_bookings.exists()
+
 
 
 

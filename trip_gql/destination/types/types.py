@@ -43,12 +43,11 @@ class UpdateDestinationParams(graphene.InputObjectType):
     destination_id = graphene.Int()
     name = graphene.String()
     description = graphene.String()
-    user_id = graphene.String()
     tags = graphene.String()
 
 class UpdateDestinationResponse(graphene.Union):
     class Meta:
-        types = (Destination, UserNotAuthorized, DestinationNotFound)
+        types = (Destination, UserNotAdmin, DestinationNotFound)
 
 class GetDestinationParams(graphene.InputObjectType):
     destination_id = graphene.Int()

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from trip.exceptions.custom_exceptions import InvalidUser
 from trip.interactors.storage_interfaces.storage_interface import StorageInterface, AccessTokenDTO, RefreshTokenDTO, \
     AuthenticationTokensDTO
 from django.http import JsonResponse
@@ -19,7 +20,11 @@ class LoginInteractor:
         access_token_str = "access_token"
         refresh_token_str = "refresh_token"
         expires = datetime.now() + timedelta(hours=1)
-        # user = UserAccount.objects.get(user_id=user_id)
+
+        check = self.storage.validate_user_id(user_id=user_id)
+        if not check:
+            return JsonResponse(data={"message": "Invalid User"}, status=200)
+
         access_token_dto = AccessTokenDTO(
             user_id=user_id,
             token=access_token_str,
@@ -42,7 +47,6 @@ class LoginInteractor:
             refresh_token_dto=refresh_token_dto
         )
 
-        self.storage.validate_user_id(user_id=user_id)
 
         login_dto = AuthenticationTokensDTO(
             access_token=access_token_str,

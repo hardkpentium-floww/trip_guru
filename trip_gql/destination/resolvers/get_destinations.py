@@ -18,10 +18,7 @@ def resolve_get_destinations(self, info,params):
     )
 
 
-    try:
-        destination_dtos = interactor.get_destinations(get_destinations_dto=get_destinations_dto)
-    except InvalidDestination:
-        return DestinationNotFound(destination_id=params.destination_id)
+    destination_dtos = interactor.get_destinations(get_destinations_dto=get_destinations_dto)
 
     return Destinations(destinations= [Destination(
             id=destination_dto.id,

@@ -137,7 +137,7 @@ class AccessTokenDTO:
     token :str
     application_name:str
     expires:datetime
-    scope :str  # Define the scope based on your requirement
+    scope :str
     source_refresh_token :str
 
 
@@ -189,7 +189,7 @@ class StorageInterface:
         pass
 
     @abstractmethod
-    def logout(self, user_id: int):
+    def logout(self, user_id: int, access_token:str):
         pass
 
     @abstractmethod
@@ -234,6 +234,10 @@ class StorageInterface:
 
     @abstractmethod
     def get_hotel(self, hotel_id: int)->HotelDTO    :
+        pass
+
+    @abstractmethod
+    def validate_hotel_id(self, hotel_id: int):
         pass
 
     @abstractmethod

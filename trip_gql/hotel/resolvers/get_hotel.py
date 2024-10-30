@@ -13,7 +13,7 @@ def resolve_get_hotel(root, info,params):
     try:
         hotel_dto = interactor.get_hotel(hotel_id=params.hotel_id)
     except InvalidHotel:
-        return HotelNotFound(id=params.id)
+        return HotelNotFound(id=params.hotel_id)
 
     return Hotel(
             id=hotel_dto.id,

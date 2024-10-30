@@ -5,11 +5,11 @@ schema {
 
 union AddDestinationResponse = Destination | UserNotAdmin
 
-union AddHotelResponse = Hotel | UserNotAuthorized | DestinationNotFound
+union AddHotelResponse = Hotel | UserNotAuthorized | TariffNotValid | DestinationNotFound
 
-union AddRatingResponse = Rating | DestinationNotFound | UserNotAuthorized
+union AddRatingResponse = Rating | DestinationNotFound | UserNotAuthorized | RatingNotValid
 
-union BookHotelResponse = Booking | BookingNotPossible
+union BookHotelResponse = Booking | BookingNotPossible | BookingDateNotValid | DestinationNotFound
 
 union GetBookingsForUserResponse = Bookings | BookingsNotFound
 
@@ -23,23 +23,27 @@ union GetHotelsResponse = Hotels | DestinationNotFound
 
 union UpdateBookingResponse = Booking | BookingNotPossible
 
-union UpdateDestinationResponse = Destination | UserNotAuthorized | DestinationNotFound
+union UpdateDestinationResponse = Destination | UserNotAdmin | DestinationNotFound
 
-union UpdateHotelResponse = Hotel | UserNotAuthorized
+union UpdateHotelResponse = Hotel | UserNotAuthorized | TariffNotValid | DestinationNotFound | HotelWithNameAlreadyExists
 
 type Booking {
   id: Int
   userId: String
   destinationId: Int
   hotelId: Int
-  checkinDate: String
-  checkoutDate: String
+  checkinDate: DateTime
+  checkoutDate: DateTime
   tariff: Int
   totalAmount: Int
 }
 
+type BookingDateNotValid {
+  checkinDate: DateTime
+  checkoutDate: DateTime
+}
+
 type BookingNotPossible {
-  bookingId: Int
   hotelId: Int
 }
 
@@ -81,6 +85,10 @@ type HotelNotFound {
   id: Int
 }
 
+type HotelWithNameAlreadyExists {
+  hotelName: String
+}
+
 type Hotels {
   hotels: [Hotel]
 }
@@ -91,6 +99,14 @@ type Rating {
   destinationId: Int
   rating: Float
   review: String
+}
+
+type RatingNotValid {
+  rating: Float
+}
+
+type TariffNotValid {
+  tariff: Int
 }
 
 type UserNotAdmin {
@@ -117,7 +133,6 @@ input AddHotelParams {
 }
 
 input AddRatingParams {
-  userId: String
   destinationId: Int
   rating: Float
   review: String
@@ -125,11 +140,10 @@ input AddRatingParams {
 
 input BookHotelParams {
   userId: String
-  checkinDate: String
-  checkoutDate: String
+  checkinDate: DateTime
+  checkoutDate: DateTime
   hotelId: Int
   destinationId: Int
-  tariff: Int
 }
 
 input GetBookingsForUserParams {
@@ -166,8 +180,8 @@ input HotelInput {
 
 input UpdateBookingParams {
   bookingId: Int
-  checkinDate: String
-  checkoutDate: String
+  checkinDate: DateTime
+  checkoutDate: DateTime
   totalAmount: Int
 }
 
@@ -175,7 +189,6 @@ input UpdateDestinationParams {
   destinationId: Int
   name: String
   description: String
-  userId: String
   tags: String
 }
 
@@ -183,7 +196,6 @@ input UpdateHotelParams {
   hotelId: Int!
   name: String
   description: String
-  totalAmount: Int
   imageUrls: String
   destinationId: Int
   tariff: Int

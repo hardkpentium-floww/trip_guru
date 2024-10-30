@@ -1,6 +1,6 @@
 import graphene
 
-from trip_gql.common_errors import UserNotAuthorized, DestinationNotFound, HotelNotFound
+from trip_gql.common_errors import UserNotAuthorized, DestinationNotFound, HotelNotFound, UserNotAdmin
 
 
 class Hotel(graphene.ObjectType):
@@ -19,24 +19,28 @@ class AddHotelParams(graphene.InputObjectType):
     image_urls = graphene.String()
     destination_id = graphene.Int()
 
+class TariffNotValid(graphene.ObjectType):
+    tariff = graphene.Int()
 
 
 class AddHotelResponse(graphene.Union):
     class Meta:
-        types = (Hotel,UserNotAuthorized, DestinationNotFound,)
+        types = (Hotel,UserNotAuthorized, TariffNotValid, DestinationNotFound,)
 
 class UpdateHotelParams(graphene.InputObjectType):
     hotel_id = graphene.Int(required=True)
     name = graphene.String()
     description = graphene.String()
-    total_amount = graphene.Int()
     image_urls = graphene.String()
     destination_id = graphene.Int()
     tariff = graphene.Int()
 
+class HotelWithNameAlreadyExists(graphene.ObjectType):
+    hotel_name = graphene.String()
+
 class UpdateHotelResponse(graphene.Union):
     class Meta:
-        types = (Hotel,UserNotAuthorized)
+        types = (Hotel,UserNotAuthorized, TariffNotValid,DestinationNotFound, HotelWithNameAlreadyExists)
 
 
 class GetHotelParams(graphene.InputObjectType):

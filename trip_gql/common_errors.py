@@ -17,7 +17,6 @@ class HotelNotFound(graphene.ObjectType):
 
 
 class BookingNotPossible(graphene.ObjectType):
-    booking_id = graphene.Int()
     hotel_id = graphene.Int()
 
 

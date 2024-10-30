@@ -17,7 +17,7 @@ class AddDestinationInteractor:
             raise InvalidAdminUser
 
         check = self.storage.check_duplicate_destination(add_destination_dto=add_destination_dto)
-        if not check:
+        if check:
             raise InvalidDestination
 
         destination_dto = self.storage.add_destination(

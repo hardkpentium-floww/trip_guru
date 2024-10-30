@@ -1,4 +1,4 @@
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 import pytest
 
 from trip.exceptions.custom_exceptions import InvalidAdminUser, InvalidUser
@@ -11,11 +11,10 @@ from trip.interactors.get_destinations_interactor import GetDestinationsInteract
 from trip.interactors.get_hotel_interactor import GetHotelInteractor
 from trip.interactors.get_hotels_interactor import GetHotelsInteractor
 from trip.interactors.storage_interfaces.storage_interface import StorageInterface, HotelDTO, \
-    DestinationDTO, BookingDTO, AddRatingDTO, AddHotelDTO
+    DestinationDTO, BookingDTO, AddRatingDTO
 from trip.interactors.update_booking import UpdateBookingInteractor
 from trip.interactors.update_destination_interactor import UpdateDestinationInteractor
 from trip.interactors.update_hotel_interactor import UpdateHotelInteractor
-from trip.tests.factories.models import UserFactory, DestinationFactory
 from trip.tests.factories.storage_dtos import AddDestinationDTOFactory, DestinationDTOFactory, HotelDTOFactory, \
     AddRatingDTOFactory, BookHotelDTOFactory, GetDestinationsDTOFactory, BookingDTOFactory, \
     UpdateDestinationDTOFactory, UpdateHotelDTOFactory
@@ -27,8 +26,8 @@ class TestInteractor:
         storage = create_autospec(StorageInterface)
         return storage
 
-
-    def test_add_destination(self, storage):
+    @patch.object(AddHotelsInteractor, 'add_hotels')
+    def test_add_destination(self, mock_add_hotels,storage):
         #Arrange
         interactor = AddDestinationInteractor(storage=storage)
         add_destination_dto = AddDestinationDTOFactory()
@@ -41,14 +40,14 @@ class TestInteractor:
             user_id=add_destination_dto.user_id
         )
 
-        storage.add_hotels.return_value = add_hotel_dtos
+        mock_add_hotels.return_value = add_hotel_dtos
 
         # Act
         destination_dto = interactor.add_destination(add_destination_dto=add_destination_dto,add_hotel_dtos=add_hotel_dtos)
 
         #assert
         storage.add_destination.assert_called_once_with(add_destination_dto=add_destination_dto)
-        storage.add_hotels.assert_called_once_with(user_id=add_destination_dto.user_id, add_hotel_dtos=add_hotel_dtos, destination_id = destination_dto.id)
+        mock_add_hotels.assert_called_once_with(user_id=add_destination_dto.user_id, add_hotel_dtos=add_hotel_dtos, destination_id = destination_dto.id)
 
         assert destination_dto.description == add_destination_dto.description
         assert destination_dto.name == add_destination_dto.name
