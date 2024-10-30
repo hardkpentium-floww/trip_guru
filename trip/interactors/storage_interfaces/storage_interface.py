@@ -269,5 +269,9 @@ class StorageInterface:
         pass
 
     @abstractmethod
+    def validate_booking_for_user(self, user_id:str):
+        pass
+
+    @abstractmethod
     def get_bookings_for_user(self, user_id: str, offset: int, limit: int) -> List[BookingDTO]:
         pass

@@ -44,6 +44,7 @@ type BookingDateNotValid {
 }
 
 type BookingNotPossible {
+  bookingId: Int
   hotelId: Int
 }
 

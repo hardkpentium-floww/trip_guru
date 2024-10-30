@@ -1,3 +1,4 @@
+from trip.exceptions.custom_exceptions import BookingScheduleOverlap
 from trip.interactors.storage_interfaces.storage_interface import StorageInterface, MutateBookingDTO
 
 
@@ -10,10 +11,13 @@ class UpdateBookingInteractor:
                  update_booking_dto: MutateBookingDTO
                  ) :
 
-        self.storage.check_overlapping_bookings(
+        check = self.storage.check_overlapping_bookings(
             user_id=update_booking_dto.user_id,
             checkin_date=update_booking_dto.checkin_date,
             checkout_date=update_booking_dto.checkout_date)
+
+        if check:
+            raise BookingScheduleOverlap
 
         booking_dto = self.storage.update_booking(
             booking_id= update_booking_dto.booking_id,

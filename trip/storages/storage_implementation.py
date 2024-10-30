@@ -381,11 +381,11 @@ class StorageImplementation(StorageInterface):
 
         return hotel_dto
 
-    def get_bookings_for_user(self, user_id: int, offset: int, limit: int) -> List[BookingDTO]:
+    def validate_booking_for_user(self, user_id:str):
         check = Booking.objects.filter(user_id=user_id).exists()
-        if not check:
-            raise NoBookingsExists
+        return check
 
+    def get_bookings_for_user(self, user_id: str, offset: int, limit: int) -> List[BookingDTO]:
         booking_objs = Booking.objects.filter(user_id=user_id).all()
 
         return [

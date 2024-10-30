@@ -18,11 +18,11 @@ class UpdateBooking(graphene.Mutation):
     def mutate(root, info, params):
         storage = StorageImplementation()
         interactor = UpdateBookingInteractor(storage=storage)
-        checkin_date = params.checkin_date.split(" ")[0].split("-")
-        checkout_date = params.checkout_date.split(" ")[0].split("-")
+        checkin_date =params.checkin_date
+        checkout_date =params.checkout_date
         tariff = BookingModel.objects.get(id=params.booking_id).hotel.tariff
 
-        days = int(checkout_date[2]) - int(checkin_date[2])
+        days = abs(checkin_date - checkout_date).days
 
         if days:
             total_amount = tariff * days
@@ -30,12 +30,13 @@ class UpdateBooking(graphene.Mutation):
             total_amount = tariff
 
         update_booking_dto = MutateBookingDTO(
-            checkin_date='-'.join(date for date in checkin_date),
-            checkout_date='-'.join(date for date in checkout_date),
+            checkin_date=checkin_date,
+            checkout_date=checkout_date,
             total_amount=total_amount,
-            booking_id=params.booking_id
-
+            booking_id=params.booking_id,
+            user_id = info.context.user_id
         )
+
         try:
             booking_dto = interactor.update_booking(update_booking_dto=update_booking_dto)
         except BookingScheduleOverlap:

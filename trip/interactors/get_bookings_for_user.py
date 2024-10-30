@@ -1,3 +1,4 @@
+from trip.exceptions.custom_exceptions import NoBookingsExists
 from trip.interactors.storage_interfaces.storage_interface import StorageInterface
 
 
@@ -12,8 +13,10 @@ class GetBookingsForUserInteractor:
                  limit: int
                  ) :
 
-        self.storage.validate_admin_user(user_id=user_id)
 
+        check = self.storage.validate_booking_for_user(user_id=user_id)
+        if not check:
+            raise NoBookingsExists
 
         destination_dto = self.storage.get_bookings_for_user(
             user_id= user_id,
