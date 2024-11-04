@@ -2,4 +2,4 @@
 -r requirements_db.txt
 -r requirements_lint.txt
 -r requirements_dev.txt
--r requirements_test.txt
+#-r requirements_test.txt

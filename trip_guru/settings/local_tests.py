@@ -4,8 +4,8 @@ from trip_guru.settings.local import *
 from trip_guru.settings.base_pg_db import *
 
 DATABASES['default']['TEST'].update({
-    'NAME':  str(uuid.uuid4()),
-    'ENGINE': os.environ.get('RDS_DB_ENGINE'),
+    'NAME': '/tmp/%s.sqlite3' % str(uuid.uuid4()),
+    'ENGINE': 'django.db.backends.sqlite3',
     'CHARSET': 'UTF8'
 })
 

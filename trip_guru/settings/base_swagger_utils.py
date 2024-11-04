@@ -24,6 +24,7 @@ from django_swagger_utils.drf_server.utils.general.import_app_settings import \
 THIRD_PARTY_APPS = []
 APPS = [
     "trip",
+    "graphql_service",
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -55,7 +56,7 @@ from django_swagger_utils.drf_server.utils.decorator.getPrivateKeyFromClientKeyR
 
 SWAGGER_UTILS = {
     "DEFAULTS": {
-        "REQUEST_WRAPPING_REQUIRED": True,
+        "REQUEST_WRAPPING_REQUIRED": False,
         "REQUEST_ENCRYPTION_REQUIRED": False,
         "GET_CLIENT_KEY_DETAILS_FUNCTION": getPrivateKeyFromClientKeyRelatedDetails,
         "GET_DECRYPTED_DATA_FUNCTION": getDecryptedData,
@@ -77,3 +78,5 @@ API_KEY_AUTHENTICATION_CLASS = \
     "trip_guru.common.authentication.APIKeyAuthentication"
 
 CUSTOM_EXCEPTIONS_TO_LOG_IN_SENTRY = []
+
+OTP_LENGTH = os.environ.get("OTP_LENGTH", 6)
