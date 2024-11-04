@@ -63,8 +63,6 @@ class Mutation(graphene.ObjectType):
     update_booking = UpdateBooking.Field(required=True)
     update_destination = UpdateDestination.Field(required=True)
     update_hotel = UpdateHotel.Field(required=True)
-    # login = Login.Field(required=True)
-    # logout = Logout.Field(required=True)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

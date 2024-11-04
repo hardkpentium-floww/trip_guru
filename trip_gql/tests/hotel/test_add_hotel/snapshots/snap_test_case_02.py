@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase.test_add_hotel Result'] = {
+snapshots['TestCase.test_add_hotel_with_invalid_admin_user Result'] = {
     'addHotel': {
         '__typename': 'UserNotAuthorized',
         'userId': 'invalid_test_user'

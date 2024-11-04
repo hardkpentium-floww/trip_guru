@@ -10,7 +10,7 @@ snapshots = Snapshot()
 snapshots['TestCase.test_add_rating Result'] = {
     'addRating': {
         '__typename': 'Rating',
-        'destinationId': 5,
+        'destinationId': 7361,
         'rating': 3.2,
         'ratingId': 1,
         'review': 'great place',

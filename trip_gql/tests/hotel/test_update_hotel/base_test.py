@@ -5,6 +5,7 @@ class UpdateHotelTest(GraphQLBaseTestCase):
     QUERY = """
         mutation Mutation($params: UpdateHotelParams!) {
           updateHotel(params: $params) {
+          __typename
             ... on Hotel {
               id
               name

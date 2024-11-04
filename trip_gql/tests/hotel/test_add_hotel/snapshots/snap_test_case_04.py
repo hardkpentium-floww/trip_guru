@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase.test_add_hotel Result'] = {
+snapshots['TestCase.test_add_hotel_with_invalid_tariff Result'] = {
     'addHotel': {
         '__typename': 'TariffNotValid',
         'tariff': -1000

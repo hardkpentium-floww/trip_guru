@@ -9,7 +9,7 @@ class TestCase(AddRatingTest):
 
     USER_ID = "test_user"
 
-    def test_add_rating(self, snapshot):
+    def test_add_rating_with_invalid_rating(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")

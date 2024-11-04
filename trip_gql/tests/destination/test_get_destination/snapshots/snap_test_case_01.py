@@ -10,12 +10,12 @@ snapshots = Snapshot()
 snapshots['TestCase.test_get_destination Result'] = {
     'getDestination': {
         '__typename': 'Destination',
-        'description': 'Tv success himself establish class owner your.',
+        'description': 'Year investment his put.',
         'hotels': [
         ],
-        'id': 1441,
-        'name': 'Kristy Wilson',
+        'id': 2237,
+        'name': 'William Ramsey',
         'tags': 'beach',
-        'userId': 'c45966f0-a778-4716-a7a2-050eb3f5a51d'
+        'userId': 'fa1aa643-de86-4ed0-b54b-2468e0f74386'
     }
 }

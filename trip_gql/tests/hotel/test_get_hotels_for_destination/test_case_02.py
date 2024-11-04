@@ -9,7 +9,7 @@ class TestCase(GetHotelsForDestinationTest):
 
     USER_ID = "test_user"
 
-    def test_get_hotels_for_destination(self, snapshot):
+    def test_get_hotels_for_destination_with_invalid_destination_id(self, snapshot):
         # Arrange
 
         destination = DestinationFactory()

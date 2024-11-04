@@ -11,7 +11,7 @@ snapshots['TestCase.test_add_hotel Result'] = {
     'addHotel': {
         '__typename': 'Hotel',
         'description': 'del',
-        'destinationId': 1662,
+        'destinationId': 9218,
         'id': 1,
         'imageUrls': 'urls',
         'name': 'hotel1',

@@ -10,7 +10,7 @@ class TestCase(BookHotelTest):
 
     USER_ID = "test_user"
 
-    def test_book_hotel(self, snapshot):
+    def test_book_hotel_with_overlapping_dates(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")

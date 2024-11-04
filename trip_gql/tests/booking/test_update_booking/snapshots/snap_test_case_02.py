@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase.test_update_booking Result'] = {
+snapshots['TestCase.test_update_booking_with_overlapping_dates Result'] = {
     'updateBooking': {
         '__typename': 'BookingNotPossible',
-        'hotelId': None
+        'hotelId': 1
     }
 }

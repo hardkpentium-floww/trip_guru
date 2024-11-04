@@ -9,7 +9,7 @@ class TestCase(AddHotelTest):
 
     USER_ID = "test_user"
 
-    def test_add_hotel(self, snapshot):
+    def test_add_hotel_with_invalid_destination_id(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")

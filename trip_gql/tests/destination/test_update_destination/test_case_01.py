@@ -20,7 +20,6 @@ class TestCase(UpdateDestinationTest):
             "destinationId": destination.id,
             "name": "hotel1",
             "description": "123123",
-            "userId": user.id,
             "tags": "beachh"
           }
         }

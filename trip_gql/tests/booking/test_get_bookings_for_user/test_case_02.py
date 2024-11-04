@@ -10,7 +10,7 @@ class TestCase(GetBookingsForUserTest):
 
     USER_ID = "test_user"
 
-    def test_get_bookings_for_user(self, snapshot):
+    def test_get_bookings_for_user_with_no_bookings(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")

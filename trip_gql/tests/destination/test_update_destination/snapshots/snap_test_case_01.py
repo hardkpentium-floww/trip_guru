@@ -11,7 +11,7 @@ snapshots['TestCase.test_add_destination Result'] = {
     'updateDestination': {
         '__typename': 'Destination',
         'description': '123123',
-        'id': 6632,
+        'id': 3132,
         'name': 'hotel1',
         'tags': 'beachh',
         'userId': 'test_user'

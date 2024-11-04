@@ -10,13 +10,13 @@ snapshots = Snapshot()
 snapshots['TestCase.test_update_booking Result'] = {
     'updateBooking': {
         '__typename': 'Booking',
-        'checkinDate': '2024-11-04T17:10:35.867857',
-        'checkoutDate': '2024-11-08T17:10:35.867862',
-        'destinationId': 5503,
-        'hotelId': 4347,
-        'id': 6362,
+        'checkinDate': '2024-11-09T10:12:30.705308',
+        'checkoutDate': '2024-11-13T10:12:30.705312',
+        'destinationId': 7046,
+        'hotelId': 3609,
+        'id': 4058,
         'tariff': None,
-        'totalAmount': 33752,
+        'totalAmount': 8860,
         'userId': 'test_user'
     }
 }

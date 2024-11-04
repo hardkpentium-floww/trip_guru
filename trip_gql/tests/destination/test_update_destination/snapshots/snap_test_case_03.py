@@ -7,9 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase.test_add_destination Result'] = {
+snapshots['TestCase.test_add_destination_with_invalid_destination_id Result'] = {
     'updateDestination': {
         '__typename': 'DestinationNotFound',
-        'destinationId': 6681
+        'destinationId': 3231
     }
 }

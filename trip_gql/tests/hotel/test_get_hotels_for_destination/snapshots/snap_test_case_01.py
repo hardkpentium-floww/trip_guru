@@ -12,44 +12,44 @@ snapshots['TestCase.test_get_hotels_for_destination Result'] = {
         '__typename': 'Hotels',
         'hotels': [
             {
-                'description': 'Leader until hit stop human there.',
-                'destinationId': 8117,
-                'id': 6939,
-                'imageUrls': 'Stage more black.',
-                'name': 'Selena Castro',
-                'tariff': 6130
+                'description': 'Top whose room line.',
+                'destinationId': 9277,
+                'id': 147,
+                'imageUrls': 'Soldier woman time true.',
+                'name': 'Steven Willis',
+                'tariff': 4757
             },
             {
-                'description': 'Plant pass about.',
-                'destinationId': 8117,
-                'id': 7093,
-                'imageUrls': 'Middle according become seek meet result.',
-                'name': 'Nathaniel Pacheco',
-                'tariff': 9317
+                'description': 'Animal none star get image yet myself.',
+                'destinationId': 9277,
+                'id': 321,
+                'imageUrls': 'Arm employee news tough center wide.',
+                'name': 'Cynthia Burke',
+                'tariff': 3440
             },
             {
-                'description': 'Care I keep candidate thousand event.',
-                'destinationId': 8117,
-                'id': 8302,
-                'imageUrls': 'Recent amount go reality machine.',
-                'name': 'Pamela Jackson',
-                'tariff': 723
+                'description': 'Hospital issue spend run medical what.',
+                'destinationId': 9277,
+                'id': 513,
+                'imageUrls': 'Religious occur result.',
+                'name': 'Linda Paul',
+                'tariff': 2240
             },
             {
-                'description': 'Language discuss office wind laugh finish seven activity.',
-                'destinationId': 8117,
-                'id': 9292,
-                'imageUrls': 'Anyone resource reduce finally color policy live.',
-                'name': 'Belinda Hunter',
-                'tariff': 5229
+                'description': 'Building defense window positive hospital dark.',
+                'destinationId': 9277,
+                'id': 2239,
+                'imageUrls': 'Participant center according dream Mrs because.',
+                'name': 'Ashley Valdez',
+                'tariff': 983
             },
             {
-                'description': 'Sport play common again interest me anything.',
-                'destinationId': 8117,
-                'id': 9785,
-                'imageUrls': 'Trouble lead third son option place economy.',
-                'name': 'Vickie Smith',
-                'tariff': 3443
+                'description': 'Respond news right reflect firm research debate weight.',
+                'destinationId': 9277,
+                'id': 5299,
+                'imageUrls': 'Easy know yeah.',
+                'name': 'Paul Cooper',
+                'tariff': 6211
             }
         ]
     }

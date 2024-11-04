@@ -7,8 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCase.test_update_hotel Result'] = {
+snapshots['TestCase.test_update_hotel_with_duplicate_name Result'] = {
     'updateHotel': {
+        '__typename': 'HotelWithNameAlreadyExists',
         'hotelName': 'hotel3'
     }
 }

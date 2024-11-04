@@ -9,7 +9,7 @@ class TestCase(UpdateDestinationTest):
 
     USER_ID = "test_user"
 
-    def test_add_destination(self, snapshot):
+    def test_add_destination_with_invalid_destination_id(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")

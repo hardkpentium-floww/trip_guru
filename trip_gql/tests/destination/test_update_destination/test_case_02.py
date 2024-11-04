@@ -9,7 +9,7 @@ class TestCase(UpdateDestinationTest):
 
     USER_ID = "invalid_test_user"
 
-    def test_add_destination(self, snapshot):
+    def test_add_destination_with_invalid_admin_user(self, snapshot):
         # Arrange
 
         user = UserFactory(id="test_user")
@@ -20,7 +20,6 @@ class TestCase(UpdateDestinationTest):
             "destinationId": destination.id,
             "name": "hotel1",
             "description": "123123",
-            "userId": user.id,
             "tags": "beachh"
           }
         }

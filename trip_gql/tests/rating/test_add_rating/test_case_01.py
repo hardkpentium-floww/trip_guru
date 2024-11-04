@@ -17,7 +17,6 @@ class TestCase(AddRatingTest):
 
         variables ={
               "params": {
-                "userId": user.id,
                 "destinationId": destination.id,
                 "rating": 3.2,
                 "review": "great place"
