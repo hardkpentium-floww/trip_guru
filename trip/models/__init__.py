@@ -1,4 +1,16 @@
-__all__ = []
+from .booking import Booking
+from .destination import Destination
+from .hotel import Hotel
+from .rating import Rating
+from .user import User
+
+__all__ = [
+    'Destination',
+    'Hotel',
+    'Rating',
+    'User',
+    'Booking'
+]
 
 # class DummyModel(AbstractDateTimeModel):
 #     """

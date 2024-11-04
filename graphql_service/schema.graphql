@@ -1,0 +1,221 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+union AddDestinationResponse = Destination | UserNotAdmin
+
+union AddHotelResponse = Hotel | UserNotAuthorized | TariffNotValid | DestinationNotFound
+
+union AddRatingResponse = Rating | DestinationNotFound | UserNotAuthorized | RatingNotValid
+
+union BookHotelResponse = Booking | BookingNotPossible | BookingDateNotValid | DestinationNotFound
+
+union GetBookingsForUserResponse = Bookings | BookingsNotFound
+
+union GetDestinationResponse = Destination | DestinationNotFound
+
+union GetDestinationsResponse = Destinations | DestinationNotFound
+
+union GetHotelResponse = Hotel | HotelNotFound
+
+union GetHotelsResponse = Hotels | DestinationNotFound
+
+union UpdateBookingResponse = Booking | BookingNotPossible
+
+union UpdateDestinationResponse = Destination | UserNotAdmin | DestinationNotFound
+
+union UpdateHotelResponse = Hotel | UserNotAuthorized | TariffNotValid | DestinationNotFound | HotelWithNameAlreadyExists
+
+type Booking {
+  id: Int
+  userId: String
+  destinationId: Int
+  hotelId: Int
+  checkinDate: DateTime
+  checkoutDate: DateTime
+  tariff: Int
+  totalAmount: Int
+}
+
+type BookingDateNotValid {
+  checkinDate: DateTime
+  checkoutDate: DateTime
+}
+
+type BookingNotPossible {
+  bookingId: Int
+  hotelId: Int
+}
+
+type Bookings {
+  bookings: [Booking]
+}
+
+type BookingsNotFound {
+  userId: String
+}
+
+type Destination {
+  id: Int
+  name: String
+  description: String
+  userId: String
+  tags: String
+  hotels: [Hotel]
+}
+
+type DestinationNotFound {
+  destinationId: Int
+}
+
+type Destinations {
+  destinations: [Destination]
+}
+
+type Hotel {
+  id: Int
+  name: String
+  description: String
+  imageUrls: String
+  destinationId: Int
+  tariff: Int
+}
+
+type HotelNotFound {
+  id: Int
+}
+
+type HotelWithNameAlreadyExists {
+  hotelName: String
+}
+
+type Hotels {
+  hotels: [Hotel]
+}
+
+type Rating {
+  ratingId: Int
+  userId: String
+  destinationId: Int
+  rating: Float
+  review: String
+}
+
+type RatingNotValid {
+  rating: Float
+}
+
+type TariffNotValid {
+  tariff: Int
+}
+
+type UserNotAdmin {
+  userId: String
+}
+
+type UserNotAuthorized {
+  userId: String
+}
+
+input AddDestinationParams {
+  name: String
+  description: String
+  tags: String
+  hotels: [HotelInput]
+}
+
+input AddHotelParams {
+  name: String
+  description: String
+  tariff: Int
+  imageUrls: String
+  destinationId: Int
+}
+
+input AddRatingParams {
+  destinationId: Int
+  rating: Float
+  review: String
+}
+
+input BookHotelParams {
+  userId: String
+  checkinDate: DateTime
+  checkoutDate: DateTime
+  hotelId: Int
+  destinationId: Int
+}
+
+input GetBookingsForUserParams {
+  userId: String
+  offset: Int
+  limit: Int
+}
+
+input GetDestinationParams {
+  destinationId: Int
+}
+
+input GetDestinationsParams {
+  tag: String
+  offset: Int
+  limit: Int
+}
+
+input GetHotelParams {
+  hotelId: Int!
+}
+
+input GetHotelsParams {
+  destinationId: Int!
+}
+
+input HotelInput {
+  name: String
+  description: String
+  tariff: Int
+  imageUrls: String
+  destinationId: Int
+}
+
+input UpdateBookingParams {
+  bookingId: Int
+  checkinDate: DateTime
+  checkoutDate: DateTime
+  totalAmount: Int
+}
+
+input UpdateDestinationParams {
+  destinationId: Int
+  name: String
+  description: String
+  tags: String
+}
+
+input UpdateHotelParams {
+  hotelId: Int!
+  name: String
+  description: String
+  imageUrls: String
+  destinationId: Int
+  tariff: Int
+}
+
+type Query {
+  getHotel(params: GetHotelParams!): GetHotelResponse
+  getHotelsForDestination(params: GetHotelsParams!): GetHotelsResponse
+  getDestination(params: GetDestinationParams!): GetDestinationResponse
+  getDestinations(params: GetDestinationsParams!): GetDestinationsResponse
+  getBookingsForUser(params: GetBookingsForUserParams!): GetBookingsForUserResponse
+}
+
+type Mutation {
+  addDestination(params: AddDestinationParams!): AddDestinationResponse!
+  addHotel(params: AddHotelParams!): AddHotelResponse!
+  addRating(params: AddRatingParams!): AddRatingResponse!
+  bookHotel(params: BookHotelParams!): BookHotelResponse!
+  updateBooking(params: UpdateBookingParams!): UpdateBookingResponse!
+  updateDestination(params: UpdateDestinationParams!): UpdateDestinationResponse!
+  updateHotel(params: UpdateHotelParams!): UpdateHotelResponse!
+}
