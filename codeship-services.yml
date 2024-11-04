@@ -1,0 +1,12 @@
+app:
+  build:
+    dockerfile: Dockerfile
+    encrypted_args_file: env.encrypted
+  cached: true
+  default_cache_branch: "alpha"
+  volumes:
+    - ./:/code
+  encrypted_env_file:
+    - env.encrypted
+
+

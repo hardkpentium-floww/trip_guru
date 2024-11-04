@@ -1,0 +1,34 @@
+- type: serial
+  services:
+    - app
+  steps:
+    - command: echo "Pulling Docker Image"
+    - command: /bin/bash -c "source /_ib_venv/bin/activate && python manage.py build -at"
+    - command: /bin/bash -c "source /_ib_venv/bin/activate && python -m pytest"
+    - type: serial
+      tag: ^(alpha|beta|gamma|prod|staging)$
+      steps:
+        - type: parallel
+          steps:
+#            - type: serial
+#              steps:
+#                - command: /bin/bash -c "source /_ib_venv/bin/activate && python setup.py sdist upload -r local"
+            - type: serial
+              steps:
+                - command: /bin/bash -c "source /_ib_venv/bin/activate && python manage.py build -d"
+                - command: /bin/bash -c "source /_ib_venv/bin/activate && python manage.py s3push -d --bucket swagger-apidocs --prefix trip_guru/$CI_BRANCH"
+            - type: serial
+              steps:
+                - command: /bin/bash -c "sentry-cli releases new -p trip_guru $CI_BUILD_ID"
+                - command: /bin/bash -c "echo \"RELEASE_VERSION = $CI_BUILD_ID\" > current_sentry_release.py"
+                - command: /bin/bash -c "sentry-cli releases set-commits --auto $CI_BUILD_ID"
+                - command: /bin/bash -c "source set_env.sh && sentry-cli releases deploys $CI_BUILD_ID new -e $SENTRY_ENV_BRANCH"
+            - type: serial
+              steps:
+#                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa update $CI_BRANCH"
+#                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa manage $CI_BRANCH 'migrate --no-input'"
+#                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa manage $CI_BRANCH 'collectstatic --no-input'"
+                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa deploy $CI_BRANCH"
+                - command: /bin/bash -c "source /_ib_venv/bin/activate && zappa certify $CI_BRANCH --yes"
+        - command: echo "Deployed $CI_BUILD_NUMBER"
+
